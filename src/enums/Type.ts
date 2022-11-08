@@ -1,0 +1,6 @@
+
+export enum Type {
+    SCIENTIFIC = "SCIENTIFIC",
+    ORGANIZATION = "ORGANIZATION"
+
+}

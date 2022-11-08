@@ -107,5 +107,7 @@
       }
     }
   },
-  "defaultProject": "innovrobots"
+  "cli": {
+    "analytics": "dae49c15-b841-4c55-9071-6882db266a99"
+  }
 }
