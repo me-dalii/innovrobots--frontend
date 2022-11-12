@@ -17,6 +17,10 @@ export class CommitteeService {
     return this.http.get<Committee[]>(this.host);
   }
 
+  public getCommitteesByEventId(id : number): Observable<Committee[]>{
+    return this.http.get<Committee[]>(`${this.host}event/${id}`);
+  }
+
   public getCommitteeById(id : number): Observable<Committee>{
     return this.http.get<Committee>(`${this.host}${id}`);
   }

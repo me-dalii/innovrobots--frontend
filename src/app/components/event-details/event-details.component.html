@@ -1,0 +1,794 @@
+<p-toast></p-toast>
+<p-menubar [model]="items">
+  <ng-template pTemplate="start">
+      <div (click)="toLanding()" pRipple class="mr-5 logo font-bold text-2xl">InnovRobots</div>
+  </ng-template>
+</p-menubar>
+
+<div class="grid p-6">
+    <div class="col-4 col-offset-4">
+        <div class="card" >
+            <div class="justify-content-between text-center">
+                <div class="text-center">                    
+                    <!-- <p-image *ngIf="event?.logo" [src]="getSrcFromCustomFile(event)" alt="" width="100px" height="100px" [preview]="true"></p-image>
+                    <img *ngIf="!event?.logo" src="./assets/images/Profile_placeholder.png" width="100px" height="100px"  alt=""/> -->
+                    <div class="font-medium text-3xl text-900">{{event?.name}}</div>
+                
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card" >
+            <div class="flex align-items-center justify-content-between mb-0">
+                <div class="font-medium text-3xl text-900 mb-3">About</div>
+                <button (click)="updateButton()" pButton type="button" icon="pi pi-pencil" class="p-button-text"></button>
+            </div>
+            <div class="surface-section">
+                <div class="text-500 mb-5">About the event details.</div>
+                <ul class="list-none p-0 m-0">
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-3 font-medium">Name</div>
+                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                            <div>{{event?.name }}</div>
+                            <!-- <p-skeleton *ngIf="!dataLoaded" width="10rem" height="1.2rem" ></p-skeleton> -->
+                        </div>
+                    </li>
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-3 font-medium">Description</div>
+                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                            <div>{{event?.description}}</div>
+                            <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                        </div>
+                    </li>
+
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-3 font-medium">Start Date</div>
+                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                            <div>{{event?.eventDate}}</div>
+                            <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                        </div>
+                    </li>
+
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-3 font-medium">End Date</div>
+                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                            <div>{{event?.endDate}}</div>
+                            <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                        </div>
+                    </li>
+
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-3 font-medium">Number Of Days</div>
+                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                            <div>{{event?.numberOfDays}}</div>
+                            <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                        </div>
+                    </li>
+
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-3 font-medium">Location</div>
+                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                            <div>{{event?.place}}</div>
+                            <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                        </div>
+                    </li>
+
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-3 font-medium">Participants Estimation</div>
+                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                            <div>{{event?.participantsEstimation}}</div>
+                            <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                        </div>
+                    </li>
+                    
+                    <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+                        <div class="text-500 w-6 md:w-3 font-medium">Status</div>
+                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                            <div>
+                                <p-tag *ngIf="event?.status == true" styleClass="mr-2" icon="pi pi-check" severity="success" value="Active"></p-tag>
+                                <p-tag *ngIf="event?.status == null" styleClass="mr-2" icon="pi pi-clock" severity="warning" value="New Inactive"></p-tag>
+                                <p-tag *ngIf="event?.status == false" icon="pi pi-times" severity="danger" value="Inactive"></p-tag>
+                            </div>
+                            <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-10 col-offset-1">
+      <div class="card">
+        <p-tabView>
+          <p-tabPanel header="Speakers">
+            <p-toolbar styleClass="mb-1">
+              <ng-template pTemplate="left">
+                <div class="my-2">
+                  <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+                    (click)="openNewSpeaker()"></button>
+                  <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                    (click)="deleteSelectedSpeakers()" [disabled]="!selectedSpeakers|| !selectedSpeakers?.length"></button>
+                </div>
+              </ng-template>
+            </p-toolbar>
+            <p-table #dt1 [value]="event?.speakers" responsiveLayout="scroll"
+              [globalFilterFields]="['firstName,lastName,cin']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+              [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [(selection)]="selectedSpeakers" selectionMode="multiple" [rowHover]="true" dataKey="id">
+              <ng-template pTemplate="caption">
+                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                  <h5 class="m-0">Speakers</h5>
+                  <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText Item="text" (input)="dt1.filterGlobal($event.target.value, 'contains')"
+                      placeholder="Search..."/>
+                  </span>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th pSortableColumn="cin"><div class="flex justify-content-center">CIN<p-sortIcon field="cin"></p-sortIcon></div></th>
+                <th pSortableColumn="firstName"><div class="flex justify-content-center">First Name<p-sortIcon field="firstName"></p-sortIcon></div>
+                </th>
+                <th pSortableColumn="lastName"><div class="flex justify-content-center">Last Name<p-sortIcon field="lastName"></p-sortIcon></div>
+                </th>
+                <th pSortableColumn="email"><div class="flex justify-content-center">Email<p-sortIcon field="email"></p-sortIcon></div>
+                </th>
+                <th pSortableColumn="phone"><div class="flex justify-content-center">Phone<p-sortIcon field="phone"></p-sortIcon></div>
+                </th>
+                  <th></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-speaker>
+                <tr>
+                  <tr>
+                    <td>
+                        <p-tableCheckbox [value]="speaker"></p-tableCheckbox>
+                    </td>
+                    <td style="width:20%; min-width:10rem;">
+                        <span class="p-column-title">cin</span>
+                        <div class="flex justify-content-center text-center">{{speaker?.cin}}</div>
+                    </td>
+                    <td style="width:20%; min-width:10rem;">
+                      <span class="p-column-title">firstName</span>
+                      <div class="flex justify-content-center text-center">{{speaker?.firstName}}</div>
+                    </td>
+                    <td style="width:20%; min-width:10rem;">
+                          <span class="p-column-title">lastName</span>
+                          <div class="flex justify-content-center text-center">{{speaker?.lastName}}</div>
+                    </td>
+                  <td style="width:20%; min-width:10rem;">
+                          <span class="p-column-title">email</span>
+                          <div class="flex justify-content-center text-center">{{speaker?.email}}</div>
+                  </td>
+                  <td style="width:20%; min-width:10rem;">
+                          <span class="p-column-title">phone</span>
+                          <div class="flex justify-content-center text-center">{{speaker?.phone}}</div>
+                  </td>
+                    <td style="width:30%; min-width:10rem;">
+                        <div class="flex justify-content-center text-center">
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
+                            (click)="editSpeaker(speaker)"></button>
+                              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                            (click)="deleteSpeaker(speaker)"></button>
+                        </div>
+                    </td>
+                </tr>
+              </ng-template>
+              <!-- empty table message-->
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="6" class="text-center">No speakers found.</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-tabPanel>
+          <p-tabPanel header="Committees">
+            <p-toolbar styleClass="mb-1">
+              <ng-template pTemplate="left">
+                <div class="my-2">
+                  <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+                    (click)="openNewCommittee()"></button>
+                  <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                    (click)="deleteSelectedCommittees()" [disabled]="!selectedCommittees|| !selectedCommittees?.length"></button>
+                </div>
+              </ng-template>
+            </p-toolbar>
+            <p-table #dt2 [value]="event?.committees" responsiveLayout="scroll"
+              [globalFilterFields]="['firstName,lastName,cin']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+              [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [(selection)]="selectedCommittees" selectionMode="multiple" [rowHover]="true" dataKey="id">
+              <ng-template pTemplate="caption">
+                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                  <h5 class="m-0">Committees</h5>
+                  <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText Item="text" (input)="dt2.filterGlobal($event.target.value, 'contains')"
+                      placeholder="Search..."/>
+                  </span>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th pSortableColumn="cin"><div class="flex justify-content-center">CIN<p-sortIcon field="cin"></p-sortIcon></div></th>
+                <th pSortableColumn="firstName"><div class="flex justify-content-center">First Name<p-sortIcon field="firstName"></p-sortIcon></div>
+                </th>
+                <th pSortableColumn="lastName"><div class="flex justify-content-center">Last Name<p-sortIcon field="lastName"></p-sortIcon></div>
+                </th>
+                <th pSortableColumn="email"><div class="flex justify-content-center">Email<p-sortIcon field="email"></p-sortIcon></div>
+                </th>
+                <th pSortableColumn="phone"><div class="flex justify-content-center">Phone<p-sortIcon field="phone"></p-sortIcon></div>
+                </th>
+                <th pSortableColumn="type"><div class="flex justify-content-center">Type<p-sortIcon field="type"></p-sortIcon></div>
+                </th>
+                  <th></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-committee>
+                <tr>
+                  <tr>
+                    <td>
+                        <p-tableCheckbox [value]="committee"></p-tableCheckbox>
+                    </td>
+                    <td style="width:20%; min-width:10rem;">
+                        <span class="p-column-title">cin</span>
+                        <div class="flex justify-content-center text-center">{{committee?.cin}}</div>
+                    </td>
+                    <td style="width:20%; min-width:10rem;">
+                      <span class="p-column-title">firstName</span>
+                      <div class="flex justify-content-center text-center">{{committee?.firstName}}</div>
+                    </td>
+                    <td style="width:20%; min-width:10rem;">
+                          <span class="p-column-title">lastName</span>
+                          <div class="flex justify-content-center text-center">{{committee?.lastName}}</div>
+                    </td>
+                  <td style="width:20%; min-width:10rem;">
+                          <span class="p-column-title">email</span>
+                          <div class="flex justify-content-center text-center">{{committee?.email}}</div>
+                  </td>
+                  <td style="width:20%; min-width:10rem;">
+                          <span class="p-column-title">phone</span>
+                          <div class="flex justify-content-center text-center">{{committee?.phone}}</div>
+                  </td>
+                  <td style="width:20%; min-width:10rem;">
+                    <span class="p-column-title">Type</span>
+                    <div class="flex justify-content-center text-center">{{committee?.type}}</div>
+                  </td>
+                    <td style="width:30%; min-width:10rem;">
+                        <div class="flex justify-content-center text-center">
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
+                            (click)="editCommittee(committee)"></button>
+                              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                            (click)="deleteCommittee(committee)"></button>
+                        </div>
+                    </td>
+                </tr>
+              </ng-template>
+              <!-- empty table message-->
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="7" class="text-center">No Committee found.</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-tabPanel>
+          <p-tabPanel header="Sponsors">
+            <p-toolbar styleClass="mb-1">
+              <ng-template pTemplate="left">
+                <div class="my-2">
+                  <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2"
+                    (click)="openNewSponsor()"></button>
+                  <button pButton pRipple label="Delete" icon="pi pi-trash" class="p-button-danger"
+                    (click)="deleteSelectedSponsors()" [disabled]="!selectedSponsors|| !selectedSponsors?.length"></button>
+                </div>
+              </ng-template>
+            </p-toolbar>
+            <p-table #dt3 [value]="event?.sponsors" responsiveLayout="scroll"
+              [globalFilterFields]="['name']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
+              [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [(selection)]="selectedSponsors" selectionMode="multiple" [rowHover]="true" dataKey="id">
+              <ng-template pTemplate="caption">
+                <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                  <h5 class="m-0">Sponsors</h5>
+                  <span class="block mt-2 md:mt-0 p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText Item="text" (input)="dt3.filterGlobal($event.target.value, 'contains')"
+                      placeholder="Search..."/>
+                  </span>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                <th pSortableColumn="name"><div class="flex justify-content-center">Name<p-sortIcon field="name"></p-sortIcon></div>
+                </th>
+                <th pSortableColumn="description"><div class="flex justify-content-center">Description<p-sortIcon field="description"></p-sortIcon></div>
+                </th>
+                <th></th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-sponsor>
+                <tr>
+                  <tr>
+                    <td>
+                        <p-tableCheckbox [value]="sponsor"></p-tableCheckbox>
+                    </td>
+                    <td style="width:20%; min-width:10rem;">
+                        <span class="p-column-title">name</span>
+                        <div class="flex justify-content-center text-center">{{sponsor?.name}}</div>
+                    </td>
+                    <td style="width:60%; min-width:10rem;">
+                      <span class="p-column-title">description</span>
+                      <div class="flex justify-content-center text-center">{{sponsor?.description}}</div>
+                    </td>
+                    <td style="width:30%; min-width:10rem;">
+                        <div class="flex justify-content-center text-center">
+                            <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
+                            (click)="editSponsor(sponsor)"></button>
+                              <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                            (click)="deleteSponsor(sponsor)"></button>
+                        </div>
+                    </td>
+                </tr>
+              </ng-template>
+              <!-- empty table message-->
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td colspan="3" class="text-center">No Sponsor found.</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-tabPanel>
+      </p-tabView>
+        
+      </div>
+    </div>
+</div>
+
+<p-dialog header="Event Details" [(visible)]="eventDetailsDialog" [modal]="true" [style]="{width: '70%'}" class="p-fluid">
+    <div class="text-500 mb-5">Please complete all required fields marked with an asterisk (*).</div>
+    <ng-template pTemplate="content">
+    <form [formGroup]="eventForm" class="grid">
+      <div class="field">
+        <input Item="text" hidden pInputText id="code" formControlName="id" />
+      </div>
+
+      <div class="field col-12">
+        <label for="name">Name *</label>
+        <input Item="text" pInputText id="name" formControlName="name" placeholder="Name" required />
+        <div *ngIf="(eventForm.get('name').invalid && eventForm.get('name').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('name').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-12">
+        <label for="Description">Description *</label>
+        <input Item="text" pInputText id="Description" formControlName="description" placeholder="Description" required />
+        <div *ngIf="(eventForm.get('description').invalid && eventForm.get('description').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('description').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+    
+
+      <div class="field col-6">
+        <label for="eventDate">Start Date *</label>
+        <p-calendar id="eventDate" appendTo="body" [showIcon]="true" dateFormat="dd/mm/yy" [showButtonBar]="true" placeholder="jj/MM/aaaa"
+                  formControlName="eventDate"></p-calendar>
+        <div *ngIf="(eventForm.get('eventDate').invalid && eventForm.get('eventDate').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('eventDate').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-6">
+        <label for="endDate">End Date *</label>
+        <p-calendar id="endDate" appendTo="body" [showIcon]="true" dateFormat="dd/mm/yy" [showButtonBar]="true" placeholder="jj/MM/aaaa"
+                  formControlName="endDate"></p-calendar>
+        <div *ngIf="(eventForm.get('endDate').invalid && eventForm.get('endDate').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('endDate').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-12">
+        <label for="place">Location *</label>
+        <input Item="text" pInputText id="place" formControlName="place" placeholder="Location" required />
+        <div *ngIf="(eventForm.get('place').invalid && eventForm.get('place').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('place').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-6">
+        <label for="numberOfDays">Number Of Days *</label>
+        <input Item="text" pInputText id="numberOfDays" formControlName="numberOfDays" placeholder="Number Of Days" required />
+        <div *ngIf="(eventForm.get('numberOfDays').invalid && eventForm.get('numberOfDays').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('numberOfDays').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-6">
+        <label for="participantsEstimation">Participants Estimation *</label>
+        <input Item="text" pInputText id="participantsEstimation" formControlName="participantsEstimation" placeholder="Participants Estimation" required />
+        <div *ngIf="(eventForm.get('participantsEstimation').invalid && eventForm.get('participantsEstimation').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('participantsEstimation').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+    </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="eventDetailsDialog=false"></button>
+    <button pButton pRipple label="Save" [disabled]="eventForm.invalid" icon="pi pi-check" class="p-button-text"
+      (click)="updateEvent()"></button>
+    </ng-template>
+</p-dialog>
+
+<!-- Speaker dialogs Section-->
+
+<p-dialog header="Speaker Details" [(visible)]="speakerDialog" [modal]="true"
+    [style]="{width: '70%'}" class="p-fluid">
+    <div class="text-500 mb-5">Please complete all required fields marked with an asterisk (*).</div>
+    <ng-template pTemplate="content">
+    <form [formGroup]="speakerForm" class="grid">
+      <!-- ---hidden--- -->
+      <div class="field">
+        <input Item="text" hidden pInputText id="code" formControlName="id" />
+      </div>
+
+      <div class="field col-12">
+        <label for="cin">CIN *</label>
+        <input Item="text" pInputText id="cin" formControlName="cin" placeholder="Identity Card Number" required />
+        <div *ngIf="(speakerForm.get('cin').invalid && speakerForm.get('cin').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('cin').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('cin').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-6">
+        <label for="firstName">First Name *</label>
+        <input Item="text" pInputText id="firstName" formControlName="firstName" placeholder="firstName" required />
+        <div *ngIf="(speakerForm.get('firstName').invalid && speakerForm.get('firstName').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('firstName').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('firstName').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-6">
+        <label for="lastName">Last Name *</label>
+        <input Item="text" pInputText id="lastName" formControlName="lastName" placeholder="lastName" required />
+        <div *ngIf="(speakerForm.get('lastName').invalid && speakerForm.get('lastName').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('lastName').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('lastName').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-8">
+        <label for="dob">Date of Birth *</label>
+        <p-calendar id="dob" appendTo="body" [showIcon]="true" dateFormat="dd/mm/yy" [showButtonBar]="true" placeholder="jj/MM/aaaa"
+                  formControlName="dob"></p-calendar>
+        <div *ngIf="(speakerForm.get('dob').invalid && speakerForm.get('dob').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('dob').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('dob').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-4">
+        <label for="gender">Gender *</label>
+        <p-dropdown id="gender" appendTo="body" [options]="genders" placeholder="Select" formControlName="gender"></p-dropdown>
+        <div *ngIf="(speakerForm.get('gender').invalid && speakerForm.get('gender').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('dob').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-7">
+        <label for="email">Email *</label>
+        <input pInputText id="email" formControlName="email" placeholder="email" required />
+        <div *ngIf="(speakerForm.get('email').invalid && speakerForm.get('email').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('email').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('email').hasError('email')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-5">
+        <label for="phone">Phone *</label>
+        <input pInputText id="phone" formControlName="phone" placeholder="phone" required />
+        <div *ngIf="(speakerForm.get('phone').invalid && speakerForm.get('phone').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('phone').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="speakerForm.get('phone').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+      
+    </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="speakerDialog=false"></button>
+    <button pButton pRipple label="Save" [disabled]="speakerForm.invalid" icon="pi pi-check" class="p-button-text"
+      (click)="saveSpeaker()"></button>
+    </ng-template>
+  </p-dialog>
+
+<p-dialog [(visible)]="deleteSpeakerDialog" header="Confirm" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span *ngIf="speaker">Are you sure you want to delete <b>{{speaker?.firstName + " " + speaker?.lastName + ""}}</b>?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+      (click)="deleteSpeakerDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSpeaker()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteSpeakersDialog" header="Confirm" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span>Are you sure you want to delete the selected Speakers?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+      (click)="deleteSpeakersDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSpeakers()"></button>
+  </ng-template>
+</p-dialog>
+
+
+<!-- Committee dialogs Section-->
+
+<p-dialog header="Committee Details" [(visible)]="committeeDialog" [modal]="true"
+    [style]="{width: '70%'}" class="p-fluid">
+    <div class="text-500 mb-5">Please complete all required fields marked with an asterisk (*).</div>
+    <ng-template pTemplate="content">
+    <form [formGroup]="committeeForm" class="grid">
+      <!-- ---hidden--- -->
+      <div class="field">
+        <input Item="text" hidden pInputText id="code" formControlName="id" />
+      </div>
+
+      <div class="field col-12">
+        <label for="type">Type *</label>
+        <p-dropdown id="type" appendTo="body" [options]="types" placeholder="Select a Type" formControlName="type"></p-dropdown>
+        <div *ngIf="(committeeForm.get('type').invalid && committeeForm.get('type').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('type').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-12">
+        <label for="cin">CIN *</label>
+        <input Item="text" pInputText id="cin" formControlName="cin" placeholder="Identity Card Number" required />
+        <div *ngIf="(committeeForm.get('cin').invalid && committeeForm.get('cin').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('cin').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('cin').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-6">
+        <label for="firstName">First Name *</label>
+        <input Item="text" pInputText id="firstName" formControlName="firstName" placeholder="firstName" required />
+        <div *ngIf="(committeeForm.get('firstName').invalid && committeeForm.get('firstName').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('firstName').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('firstName').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-6">
+        <label for="lastName">Last Name *</label>
+        <input Item="text" pInputText id="lastName" formControlName="lastName" placeholder="lastName" required />
+        <div *ngIf="(committeeForm.get('lastName').invalid && committeeForm.get('lastName').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('lastName').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('lastName').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-8">
+        <label for="dob">Date of Birth *</label>
+        <p-calendar id="dob" appendTo="body" [showIcon]="true" dateFormat="dd/mm/yy" [showButtonBar]="true" placeholder="jj/MM/aaaa"
+                  formControlName="dob"></p-calendar>
+        <div *ngIf="(committeeForm.get('dob').invalid && committeeForm.get('dob').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('dob').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('dob').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-4">
+        <label for="gender">Gender *</label>
+        <p-dropdown id="gender" appendTo="body" [options]="genders" placeholder="Select" formControlName="gender"></p-dropdown>
+        <div *ngIf="(committeeForm.get('gender').invalid && committeeForm.get('gender').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('gender').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-7">
+        <label for="email">Email *</label>
+        <input pInputText id="email" formControlName="email" placeholder="email" required />
+        <div *ngIf="(committeeForm.get('email').invalid && committeeForm.get('email').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('email').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('email').hasError('email')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-5">
+        <label for="phone">Phone *</label>
+        <input pInputText id="phone" formControlName="phone" placeholder="phone" required />
+        <div *ngIf="(committeeForm.get('phone').invalid && committeeForm.get('phone').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('phone').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="committeeForm.get('phone').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+      
+    </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="committeeDialog=false"></button>
+    <button pButton pRipple label="Save" [disabled]="committeeForm.invalid" icon="pi pi-check" class="p-button-text"
+      (click)="saveCommittee()"></button>
+    </ng-template>
+  </p-dialog>
+
+<p-dialog [(visible)]="deleteCommitteeDialog" header="Confirm" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span *ngIf="committee">Are you sure you want to delete <b>{{committee?.firstName + " " + committee?.lastName + ""}}</b>?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+      (click)="deleteCommitteeDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteCommittee()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteCommitteesDialog" header="Confirm" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span>Are you sure you want to delete the selected Committees?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+      (click)="deleteCommitteesDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteCommittees()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Sponsor dialogs Section-->
+
+<p-dialog header="Sponsor Details" [(visible)]="sponsorDialog" [modal]="true"
+    [style]="{width: '70%'}" class="p-fluid">
+    <div class="text-500 mb-5">Please complete all required fields marked with an asterisk (*).</div>
+    <ng-template pTemplate="content">
+    <form [formGroup]="sponsorForm" class="grid">
+      <!-- ---hidden--- -->
+      <div class="field">
+        <input Item="text" hidden pInputText id="code" formControlName="id" />
+      </div>
+
+      <div class="field col-12">
+        <label for="name">Name *</label>
+        <input Item="text" pInputText id="name" formControlName="name" placeholder="Sponsor Name" required />
+        <div *ngIf="(sponsorForm.get('name').invalid && sponsorForm.get('name').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="sponsorForm.get('name').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="sponsorForm.get('name').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-12">
+        <label for="description">Description *</label>
+        <textarea autoResize="false" id="description" formControlName="description" placeholder="Sponsor Description" required pInputTextarea></textarea>
+        <div *ngIf="(sponsorForm.get('description').invalid && sponsorForm.get('description').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="sponsorForm.get('description').hasError('required')">
+            Obligatory.
+          </small>
+          <small class="ng-dirty ng-invalid" *ngIf="sponsorForm.get('description').hasError('pattern')">
+            Invalid.
+          </small>
+        </div>
+      </div>
+      
+    </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="sponsorDialog=false"></button>
+    <button pButton pRipple label="Save" [disabled]="sponsorForm.invalid" icon="pi pi-check" class="p-button-text"
+      (click)="saveSponsor()"></button>
+    </ng-template>
+  </p-dialog>
+
+<p-dialog [(visible)]="deleteSponsorDialog" header="Confirm" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span *ngIf="sponsor">Are you sure you want to delete <b>{{sponsor?.name}}</b>?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+      (click)="deleteSponsorDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSponsor()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteSponsorsDialog" header="Confirm" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span>Are you sure you want to delete the selected Sponsors?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+      (click)="deleteSponsorsDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteSponsors()"></button>
+  </ng-template>
+</p-dialog>

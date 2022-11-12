@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Event } from 'src/models/Event';
 import { EventService } from 'src/services/event.service';
@@ -26,7 +27,7 @@ export class EventComponent implements OnInit {
 
 
 
-  constructor(private messageService: MessageService, private eventService : EventService) { }
+  constructor(private messageService: MessageService, private eventService : EventService, private router: Router) { }
 
   ngOnInit(): void {
 
@@ -34,6 +35,7 @@ export class EventComponent implements OnInit {
 
     this.eventForm = new FormGroup({
       id: new FormControl(''),
+      name: new FormControl(''),
       description: new FormControl(''),
       eventDate: new FormControl(''),
       endDate: new FormControl(''),
@@ -63,10 +65,9 @@ export class EventComponent implements OnInit {
 
   saveEvent(){
 
-    
-    
     this.event = {
       'id': this.eventForm.get('id').value,
+      'name': this.eventForm.get('name').value,
       'description': this.eventForm.get('description').value,
       'eventDate': this.eventForm.get('eventDate').value,
       'endDate': this.eventForm.get('endDate').value,
@@ -89,19 +90,9 @@ export class EventComponent implements OnInit {
   
   }
 
-  editEvent(event : Event){
-    this.eventForm.reset()
-    this.event = {...event};
-    this.eventForm.get('id').setValue(event.id)
-    this.eventForm.get('description').setValue(event.description)
-    this.eventForm.get('eventDate').setValue(event.eventDate)
-    this.eventForm.get('endDate').setValue(event.endDate)
-    this.eventForm.get('numberOfDays').setValue(event.numberOfDays)
-    this.eventForm.get('place').setValue(event.place)
-    this.eventForm.get('participantsEstimation').setValue(event.participantsEstimation)
-    this.eventDialog = true;
+  viewEvent(event){
+    this.router.navigate(['manage/event/',event.id]);
   }
-
 
   deleteEvent(event: Event){
     this.event = event;
@@ -137,6 +128,13 @@ export class EventComponent implements OnInit {
     this.deleteEventsDialog = false;
     this.selectedEvents = null;
 
+  }
+
+  activateEvent(event){
+    this.eventService.activateEvent(event.id).subscribe({
+      next: (response: Event[]) => this.getEvents(),
+      error: (e) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Loading Failed', life: 3000 }),
+    })
   }
 
 }

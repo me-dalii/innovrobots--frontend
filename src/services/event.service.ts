@@ -21,11 +21,19 @@ export class EventService {
     return this.http.get<Event>(`${this.host}${id}`);
   }
 
+  public getActivatedEvent(): Observable<Event>{
+    return this.http.get<Event>(this.host+"activated");
+  }
+
   public saveEvent(event : Event):Observable<Event>{
     return this.http.post<Event>(this.host, event);
   }
 
   public deleteEvent(id : Number):Observable<Event>{
     return this.http.delete<Event>(`${this.host}${id}`);
+  }
+
+  public activateEvent(id : Number):Observable<any>{
+    return this.http.put<any>(`${this.host}${id}`,null);
   }
 }

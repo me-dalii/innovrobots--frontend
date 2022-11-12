@@ -9,7 +9,7 @@ import { Sponsor } from 'src/models/Sponsor';
 })
 export class SponsorService {
 
-  public host = environment.apiUrl + "event/";
+  public host = environment.apiUrl + "sponsor/";
 
   constructor( private http : HttpClient ) { }
 
@@ -27,5 +27,9 @@ export class SponsorService {
 
   public deleteSponsor(id : Number):Observable<Sponsor>{
     return this.http.delete<Sponsor>(`${this.host}${id}`);
+  }
+
+  public getSponsorsByEventId(id : number): Observable<Sponsor[]>{
+    return this.http.get<Sponsor[]>(`${this.host}event/${id}`);
   }
 }

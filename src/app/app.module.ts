@@ -55,12 +55,19 @@ import { TagModule } from 'primeng/tag';
 import {ImageModule} from 'primeng/image';
 import {CardModule} from 'primeng/card';
 import { HttpClientModule } from '@angular/common/http';
+import { EventDetailsComponent } from './components/event-details/event-details.component';
+import {MenubarModule} from 'primeng/menubar';
+import { RippleModule } from 'primeng/ripple';
+import {CarouselModule} from 'primeng/carousel';
+import {ScrollTopModule} from 'primeng/scrolltop';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LandingComponent,
-    EventComponent
+    EventComponent,
+    EventDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -115,7 +122,11 @@ import { HttpClientModule } from '@angular/common/http';
     TableModule,
     TagModule,
     ImageModule,
-    CardModule
+    CardModule,
+    MenubarModule,
+    RippleModule,
+    CarouselModule,
+    ScrollTopModule
   ],
   providers: [],
   bootstrap: [AppComponent]

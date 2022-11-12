@@ -9,12 +9,16 @@ import { Speaker } from 'src/models/Speaker';
 })
 export class SpeakerService {
 
-  public host = environment.apiUrl + "event/";
+  public host = environment.apiUrl + "speaker/";
 
   constructor( private http : HttpClient ) { }
 
   public getSpeakers(): Observable<Speaker[]>{
     return this.http.get<Speaker[]>(this.host);
+  }
+
+  public getSpeakersByEventId(id : number): Observable<Speaker[]>{
+    return this.http.get<Speaker[]>(`${this.host}event/${id}`);
   }
 
   public getSpeakerById(id : number): Observable<Speaker>{

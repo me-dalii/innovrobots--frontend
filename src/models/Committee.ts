@@ -1,6 +1,7 @@
 import { Gender } from "src/enums/Gender";
 import { Type } from "src/enums/Type";
 import { AbstractEntity } from "./AbstractEntity";
+import { Event } from 'src/models/Event';
 
 export interface Committee extends AbstractEntity{
     firstName? : string;
@@ -11,5 +12,7 @@ export interface Committee extends AbstractEntity{
     dob? : Date;
     gender? : Gender;
     type? : Type;
+
+    event? : Event;
 
 }

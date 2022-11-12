@@ -1,5 +1,6 @@
 import { Gender } from "src/enums/Gender";
 import { AbstractEntity } from "./AbstractEntity";
+import { Event } from 'src/models/Event';
 
 export interface Speaker extends AbstractEntity{
     firstName? : string;
@@ -9,5 +10,6 @@ export interface Speaker extends AbstractEntity{
     phone? : string;
     dob? : Date;
     gender? : Gender;
+    event? : Event;
 
 }
