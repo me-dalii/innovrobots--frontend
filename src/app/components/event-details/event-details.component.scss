@@ -1,3 +1,10 @@
 .logo{
     cursor: pointer;
 }
+
+.registerButton:hover{
+    color: var(--white) !important;
+    cursor: pointer;
+    box-shadow: 0 0 11px rgba(33,33,33,.2); 
+
+}

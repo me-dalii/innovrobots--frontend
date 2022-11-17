@@ -60,6 +60,11 @@ import {MenubarModule} from 'primeng/menubar';
 import { RippleModule } from 'primeng/ripple';
 import {CarouselModule} from 'primeng/carousel';
 import {ScrollTopModule} from 'primeng/scrolltop';
+import { RegistrationComponent } from './components/registration/registration.component';
+import { TeacherComponent } from './components/registration/teacher/teacher.component';
+import { CompanyComponent } from './components/registration/company/company.component';
+import { StudentComponent } from './components/registration/student/student.component';
+import { SuccessComponent } from './components/success/success.component';
 
 
 @NgModule({
@@ -67,7 +72,12 @@ import {ScrollTopModule} from 'primeng/scrolltop';
     AppComponent,
     LandingComponent,
     EventComponent,
-    EventDetailsComponent
+    EventDetailsComponent,
+    RegistrationComponent,
+    TeacherComponent,
+    CompanyComponent,
+    StudentComponent,
+    SuccessComponent
   ],
   imports: [
     BrowserModule,

@@ -57,6 +57,9 @@ export class LandingComponent implements OnInit {
     this.router.navigate(['/manage']);
   }
 
+  toRegistration(){
+    this.router.navigate(['/registration']);
+  }
   
   getactivatedEvent() {
     this.eventService.getActivatedEvent().subscribe({

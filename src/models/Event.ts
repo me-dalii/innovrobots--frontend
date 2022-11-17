@@ -2,7 +2,9 @@ import { AbstractEntity } from "./AbstractEntity";
 import { Committee } from "./Committee";
 import { Sponsor } from "./Sponsor";
 import { Speaker } from "./Speaker";
-
+import { Student } from "./Student";
+import { Teacher } from "./Teacher";
+import { Company } from "./Company";
 
 export interface Event extends AbstractEntity{
     name? : string;
@@ -11,12 +13,23 @@ export interface Event extends AbstractEntity{
     endDate? : Date;
     numberOfDays? : number;
     place? : string;
-    participantsEstimation? : number;
 
     status? : boolean;
 
     speakers? : Speaker[];
     committees? : Committee[];
     sponsors? : Sponsor[];
+
+    students? : Student[];
+    numberOfAllowedStudents? : number;
+    studentsPrice? : number;
+
+    teachers? : Teacher[];
+    numberOfAllowedTeachers? : number;
+    teachersPrice? : number;
+
+    companies? : Company[];
+    numberOfAllowedCompanies? : number;
+    companiesPrice? : number;
 
 }

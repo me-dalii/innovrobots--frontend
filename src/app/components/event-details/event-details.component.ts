@@ -12,6 +12,13 @@ import { Committee } from 'src/models/Committee';
 import { CommitteeService } from 'src/services/committee.service';
 import { Sponsor } from 'src/models/Sponsor';
 import { SponsorService } from 'src/services/sponsor.service';
+import { Student } from 'src/models/Student';
+import { StudentService } from 'src/services/student.service';
+import { University } from 'src/enums/University';
+import { Teacher } from 'src/models/Teacher';
+import { TeacherService } from 'src/services/teacher.service';
+import { Company } from 'src/models/Company';
+import { CompanyService } from 'src/services/company.service';
 
 @Component({
   selector: 'app-event-details',
@@ -60,17 +67,54 @@ export class EventDetailsComponent implements OnInit {
   deleteSponsorsDialog: boolean = false;
   sponsorForm: FormGroup;
 
+  //student
+  students: Student[];
+  selectedStudents : Student[];
+  student : Student;
+  studentDialog : boolean;
+  deleteStudentDialog: boolean = false;
+  deleteStudentsDialog: boolean = false;
+  studentForm: FormGroup;
+
+  //Teacher
+  teachers: Teacher[];
+  selectedTeachers : Teacher[];
+  teacher : Teacher;
+  teacherDialog : boolean;
+  deleteTeacherDialog: boolean = false;
+  deleteTeachersDialog: boolean = false;
+  teacherForm: FormGroup;
+
+    //Company
+    companies: Company[];
+    selectedCompanies : Company[];
+    company : Company;
+    companyDialog : boolean;
+    deleteCompanyDialog: boolean = false;
+    deleteCompaniesDialog: boolean = false;
+    companyForm: FormGroup;
+
   items: MenuItem[];
+
+  showMenu : boolean;
+  showStudent : boolean = false;
+  showTeacher : boolean = false;
+  showCompany : boolean = false;
+
+  uni = University;
+  unis = [];
 
 
   constructor(private route: ActivatedRoute, private sponsorService: SponsorService, private eventService: EventService, private committeeService: CommitteeService, 
-    private messageService: MessageService, private speakerService: SpeakerService ) { }
+    private messageService: MessageService, private companyService: CompanyService, private teacherService: TeacherService, private speakerService: SpeakerService, private  studentService: StudentService) { }
 
   ngOnInit(): void {
+    this.showMenu = true;
     this.pathId = parseInt(this.route.snapshot.paramMap.get('id'));
     this.genders = Object.keys(this.gender);
     this.types = Object.keys(this.type);
-
+    this.unis = Object.keys(this.uni);
+     
     this.getEvent();
 
     this.items = [
@@ -101,7 +145,13 @@ export class EventDetailsComponent implements OnInit {
       endDate: new FormControl(''),
       numberOfDays: new FormControl(''),
       place: new FormControl(''),
-      participantsEstimation: new FormControl(''),
+      numberOfAllowedStudents: new FormControl(''),
+      studentsPrice: new FormControl(''),
+      numberOfAllowedTeachers: new FormControl(''),
+      teachersPrice: new FormControl(''),
+      numberOfAllowedCompanies: new FormControl(''),
+      companiesPrice: new FormControl(''),
+
     });
 
     this.speakerForm = new FormGroup({
@@ -133,6 +183,39 @@ export class EventDetailsComponent implements OnInit {
       description: new FormControl(''),
     });
 
+    this.studentForm = new FormGroup({
+      id: new FormControl(''),
+      firstName: new FormControl(''),
+      lastName: new FormControl(''),
+      email: new FormControl(''),
+      phone: new FormControl(''),
+      dob : new FormControl(''),
+      gender : new FormControl(''),
+      university : new FormControl(''),
+      grade : new FormControl('')
+    });
+
+    this.teacherForm = new FormGroup({
+      id: new FormControl(''),
+      firstName: new FormControl(''),
+      lastName: new FormControl(''),
+      email: new FormControl(''),
+      phone: new FormControl(''),
+      dob : new FormControl(''),
+      gender : new FormControl(''),
+      university : new FormControl(''),
+    });
+
+    this.companyForm = new FormGroup({
+      id: new FormControl(''),
+      name: new FormControl(''),
+      description: new FormControl(''),
+      email: new FormControl(''),
+      phone: new FormControl(''),
+      address : new FormControl(''),
+    });
+
+
   }
 
   getEvent() {
@@ -143,6 +226,9 @@ export class EventDetailsComponent implements OnInit {
         this.getSpeakers();
         this.getCommittees();
         this.getSponsors();
+        this.getStudents();
+        this.getTeachers();
+        this.getCompanies();
       }
     })
   }
@@ -160,8 +246,12 @@ export class EventDetailsComponent implements OnInit {
     this.eventForm.get('endDate').setValue(new Date(this.event.endDate));
     this.eventForm.get('numberOfDays').setValue(this.event.numberOfDays);
     this.eventForm.get('place').setValue(this.event.place);
-    this.eventForm.get('participantsEstimation').setValue(this.event.participantsEstimation);
-
+    this.eventForm.get('numberOfAllowedStudents').setValue(this.event.numberOfAllowedStudents);
+    this.eventForm.get('studentsPrice').setValue(this.event.studentsPrice);
+    this.eventForm.get('numberOfAllowedTeachers').setValue(this.event.numberOfAllowedTeachers);
+    this.eventForm.get('teachersPrice').setValue(this.event.teachersPrice);
+    this.eventForm.get('numberOfAllowedCompanies').setValue(this.event.numberOfAllowedCompanies);
+    this.eventForm.get('companiesPrice').setValue(this.event.companiesPrice);
     this.eventDetailsDialog = true;
   }
 
@@ -175,8 +265,13 @@ export class EventDetailsComponent implements OnInit {
       'endDate': this.eventForm.get('endDate').value,
       'numberOfDays': this.eventForm.get('numberOfDays').value,
       'place': this.eventForm.get('place').value,
-      'participantsEstimation': this.eventForm.get('participantsEstimation').value,
-      'status' : this.event.status
+      'status' : this.event.status,
+      'numberOfAllowedStudents': this.eventForm.get('numberOfAllowedStudents').value,
+      'studentsPrice': this.eventForm.get('studentsPrice').value,
+      'numberOfAllowedTeachers': this.eventForm.get('numberOfAllowedTeachers').value,
+      'teachersPrice': this.eventForm.get('teachersPrice').value,
+      'numberOfAllowedCompanies': this.eventForm.get('numberOfAllowedCompanies').value,
+      'companiesPrice': this.eventForm.get('companiesPrice').value,
     }
 
     this.eventService.saveEvent(this.event).subscribe({
@@ -192,7 +287,6 @@ export class EventDetailsComponent implements OnInit {
     })
   
   }
-
 
   //speaker methods
   getSpeakers(){
@@ -461,6 +555,308 @@ export class EventDetailsComponent implements OnInit {
       })
     }
     this.selectedCommittees = null;
+  }
+
+  
+  //student methods
+  getStudents(){
+    this.studentService.getStudentsByEventId(this.pathId).subscribe({
+      next: (response: Student[]) => {
+        this.students = response;
+        this.event.students = response;
+      },
+      error: (e) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Loading Failed', life: 3000 }),
+      complete: () => {}
+    })
+  }
+
+  saveStudent(){
+    this.student = {
+      'id': this.studentForm.get('id').value,
+      'firstName': this.studentForm.get('firstName').value,
+      'lastName': this.studentForm.get('lastName').value,
+      'email': this.studentForm.get('email').value,
+      'phone': this.studentForm.get('phone').value,
+      'dob': this.studentForm.get('dob').value,
+      'university': this.studentForm.get('university').value,
+      'grade' : this.studentForm.get('grade').value,
+      'gender' : this.studentForm.get('gender').value,
+      'event' : this.event,
+    }
+    this.studentService.saveStudent(this.student).subscribe({
+      next: (response: Student) => {
+        this.studentForm.reset();
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Student Added', life: 3000 });
+        this.getStudents();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.studentDialog = false
+    })
+  }
+
+  openNewStudent(){
+    this.studentDialog = true;
+  }
+
+  editStudent(student){
+    this.studentForm.get('id').setValue(student.id);
+    this.studentForm.get('firstName').setValue(student.firstName);
+    this.studentForm.get('lastName').setValue(student.lastName);
+    this.studentForm.get('email').setValue(student.email);
+    this.studentForm.get('phone').setValue(student.phone);
+    this.studentForm.get('dob').setValue(new Date(student.dob));
+    this.studentForm.get('university').setValue(student.university);
+    this.studentForm.get('grade').setValue(student.grade);
+    this.studentForm.get('gender').setValue(student.gender);
+
+    this.studentDialog = true;
+  }
+
+  deleteStudent(student){
+    this.student = student;
+    this.deleteStudentDialog = true;
+  }
+
+  deleteSelectedStudents(){
+    this.deleteStudentsDialog = true;
+  }
+
+  confirmDeleteStudent(){
+    this.studentService.deleteStudent(this.student.id).subscribe({
+      next: (response: Student) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Student Deleted', life: 3000 });
+        this.getStudents();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.deleteStudentDialog = false
+    })
+  }
+
+  confirmDeleteStudents(){
+    for(let student of this.selectedStudents){
+      this.studentService.deleteStudent(student.id).subscribe({
+        next: (response: Student) => {
+          this.messageService.add({ severity: 'success', summary: 'success', detail: 'Student Deleted', life: 3000 });
+          this.getStudents();
+        },
+        error: (e) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+        },
+        complete: () => {this.deleteStudentsDialog = false}
+      })
+    }
+    this.selectedStudents = null;
+  }
+
+  
+  //teacher methods
+  getTeachers(){
+    this.teacherService.getTeachersByEventId(this.pathId).subscribe({
+      next: (response: Teacher[]) => {
+        this.teachers = response;
+        this.event.teachers = response;
+      },
+      error: (e) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Loading Failed', life: 3000 }),
+      complete: () => {}
+    })
+  }
+
+  saveTeacher(){
+    this.teacher = {
+      'id': this.teacherForm.get('id').value,
+      'firstName': this.teacherForm.get('firstName').value,
+      'lastName': this.teacherForm.get('lastName').value,
+      'email': this.teacherForm.get('email').value,
+      'phone': this.teacherForm.get('phone').value,
+      'dob': this.teacherForm.get('dob').value,
+      'university': this.teacherForm.get('university').value,
+      'gender' : this.teacherForm.get('gender').value,
+      'event' : this.event,
+    }
+    this.teacherService.saveTeacher(this.teacher).subscribe({
+      next: (response: Teacher) => {
+        this.teacherForm.reset();
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Teacher Added', life: 3000 });
+        this.getTeachers();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.teacherDialog = false
+    })
+  }
+
+  openNewTeacher(){
+    this.teacherDialog = true;
+  }
+
+  editTeacher(teacher){
+    this.teacherForm.get('id').setValue(teacher.id);
+    this.teacherForm.get('firstName').setValue(teacher.firstName);
+    this.teacherForm.get('lastName').setValue(teacher.lastName);
+    this.teacherForm.get('email').setValue(teacher.email);
+    this.teacherForm.get('phone').setValue(teacher.phone);
+    this.teacherForm.get('dob').setValue(new Date(teacher.dob));
+    this.teacherForm.get('university').setValue(teacher.university);
+    this.teacherForm.get('gender').setValue(teacher.gender);
+
+    this.teacherDialog = true;
+  }
+
+  deleteTeacher(teacher){
+    this.teacher = teacher;
+    this.deleteTeacherDialog = true;
+  }
+
+  deleteSelectedTeachers(){
+    this.deleteTeachersDialog = true;
+  }
+
+  confirmDeleteTeacher(){
+    this.teacherService.deleteTeacher(this.teacher.id).subscribe({
+      next: (response: Teacher) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Teacher Deleted', life: 3000 });
+        this.getTeachers();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.deleteTeacherDialog = false
+    })
+  }
+
+  confirmDeleteTeachers(){
+    for(let teacher of this.selectedTeachers){
+      this.teacherService.deleteTeacher(teacher.id).subscribe({
+        next: (response: Teacher) => {
+          this.messageService.add({ severity: 'success', summary: 'success', detail: 'Teacher Deleted', life: 3000 });
+          this.getTeachers();
+        },
+        error: (e) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+        },
+        complete: () => {this.deleteTeachersDialog = false}
+      })
+    }
+    this.selectedTeachers = null;
+  }
+
+  //company methods
+  getCompanies(){
+    this.companyService.getCompaniesByEventId(this.pathId).subscribe({
+      next: (response: Company[]) => {
+        this.companies = response;
+        this.event.companies = response;
+      },
+      error: (e) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Loading Failed', life: 3000 }),
+      complete: () => {}
+    })
+  }
+
+  saveCompany(){
+    this.company = {
+      'id': this.companyForm.get('id').value,
+      'name': this.companyForm.get('name').value,
+      'description': this.companyForm.get('description').value,
+      'phone': this.companyForm.get('phone').value,
+      'email': this.companyForm.get('email').value,
+      'address': this.companyForm.get('address').value,
+      'event' : this.event,
+    }
+    this.companyService.saveCompany(this.company).subscribe({
+      next: (response: Company) => {
+        this.teacherForm.reset();
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Company Added', life: 3000 });
+        this.getCompanies();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.companyDialog = false
+    })
+  }
+
+  openNewCompany(){
+    this.companyDialog = true;
+  }
+
+  editCompany(company){
+    this.companyForm.get('id').setValue(company.id);
+    this.companyForm.get('name').setValue(company.name);
+    this.companyForm.get('description').setValue(company.description);
+    this.companyForm.get('email').setValue(company.email);
+    this.companyForm.get('phone').setValue(company.phone);
+    this.companyForm.get('address').setValue(company.address);
+
+    this.companyDialog = true;
+  }
+
+  deleteCompany(company){
+    this.company = company;
+    this.deleteCompanyDialog = true;
+  }
+
+  deleteSelectedCompanies(){
+    this.deleteCompaniesDialog = true;
+  }
+
+  confirmDeleteCompany(){
+    this.companyService.deleteCompany(this.company.id).subscribe({
+      next: (response: Company) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Company Deleted', life: 3000 });
+        this.getCompanies();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.deleteCompanyDialog = false
+    })
+  }
+
+  confirmDeleteCompanies(){
+    for(let company of this.selectedCompanies){
+      this.companyService.deleteCompany(company.id).subscribe({
+        next: (response: Company) => {
+          this.messageService.add({ severity: 'success', summary: 'success', detail: 'Company Deleted', life: 3000 });
+          this.getCompanies();
+        },
+        error: (e) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+        },
+        complete: () => {this.deleteCompaniesDialog = false}
+      })
+    }
+    this.selectedCompanies = null;
+  }
+
+  toStudent(){
+    this.showStudent = true;
+    this.showCompany = false;
+    this.showTeacher = false;
+    this.showMenu = false;
+  }
+  toEducator(){
+    this.showTeacher = true;
+    this.showStudent = false;
+    this.showCompany = false;
+    this.showMenu = false;
+
+  }
+  toCompany(){
+    this.showCompany = true;
+    this.showTeacher = false;
+    this.showStudent = false;
+    this.showMenu = false;
+  }
+  backToMenu(){
+    this.showMenu = true;
+    this.showCompany = false;
+    this.showTeacher = false;
+    this.showStudent = false;
   }
 
 }

@@ -41,7 +41,12 @@ export class EventComponent implements OnInit {
       endDate: new FormControl(''),
       numberOfDays: new FormControl(''),
       place: new FormControl(''),
-      participantsEstimation: new FormControl(''),
+      numberOfAllowedStudents: new FormControl(''),
+      studentsPrice: new FormControl(''),
+      numberOfAllowedTeachers: new FormControl(''),
+      teachersPrice: new FormControl(''),
+      numberOfAllowedCompanies: new FormControl(''),
+      companiesPrice: new FormControl(''),
     })
   }
 
@@ -73,7 +78,13 @@ export class EventComponent implements OnInit {
       'endDate': this.eventForm.get('endDate').value,
       'numberOfDays': this.eventForm.get('numberOfDays').value,
       'place': this.eventForm.get('place').value,
-      'participantsEstimation': this.eventForm.get('participantsEstimation').value,
+      'numberOfAllowedStudents': this.eventForm.get('numberOfAllowedStudents').value,
+      'studentsPrice': this.eventForm.get('studentsPrice').value,
+      'numberOfAllowedTeachers': this.eventForm.get('numberOfAllowedTeachers').value,
+      'teachersPrice': this.eventForm.get('teachersPrice').value,
+      'numberOfAllowedCompanies': this.eventForm.get('numberOfAllowedCompanies').value,
+      'companiesPrice': this.eventForm.get('companiesPrice').value,
+
     }
 
     this.eventService.saveEvent(this.event).subscribe({

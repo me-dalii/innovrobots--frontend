@@ -89,12 +89,12 @@
               <div class="flex justify-content-center text-center">
                 <p-tag *ngIf="event?.status == true" styleClass="mr-2" icon="pi pi-check" severity="success" value="Active"></p-tag>
                 <p-tag *ngIf="event?.status == null" styleClass="mr-2" icon="pi pi-clock" severity="warning" value="New Inactive"></p-tag>
-                <p-tag *ngIf="event?.status == false" icon="pi pi-times" severity="danger" value="Inactive"></p-tag>
+                <p-tag *ngIf="event?.status == false" icon="pi pi-times" severity="warning" value="Inactive"></p-tag>
               </div>
             </td>
               <td style="width:30%; min-width:10rem;">
                   <div class="flex justify-content-center text-center">
-                    <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-primary mr-2"
+                    <button pButton pRipple icon="pi pi-bolt" class="p-button-rounded p-button-primary mr-2"
                       (click)="activateEvent(event)"></button>
                       <button pButton pRipple icon="pi pi-eye" class="p-button-rounded p-button-info mr-2"
                       (click)="viewEvent(event)"></button>
@@ -170,7 +170,7 @@
       </div>
     </div>
 
-    <div class="field col-12">
+    <div class="field col-8">
       <label for="place">Location *</label>
       <input Item="text" pInputText id="place" formControlName="place" placeholder="Location" required />
       <div *ngIf="(eventForm.get('place').invalid && eventForm.get('place').dirty)">
@@ -180,7 +180,7 @@
       </div>
     </div>
 
-    <div class="field col-6">
+    <div class="field col-4">
       <label for="numberOfDays">Number Of Days *</label>
       <input Item="text" pInputText id="numberOfDays" formControlName="numberOfDays" placeholder="Number Of Days" required />
       <div *ngIf="(eventForm.get('numberOfDays').invalid && eventForm.get('numberOfDays').dirty)">
@@ -190,15 +190,65 @@
       </div>
     </div>
 
-    <div class="field col-6">
-      <label for="participantsEstimation">Participants Estimation *</label>
-      <input Item="text" pInputText id="participantsEstimation" formControlName="participantsEstimation" placeholder="Participants Estimation" required />
-      <div *ngIf="(eventForm.get('participantsEstimation').invalid && eventForm.get('participantsEstimation').dirty)">
-        <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('participantsEstimation').hasError('required')">
-          Obligatory.
-        </small>
+    <div class="field col-4">
+        <label for="numberOfAllowedStudents">Number Of Allowed Students *</label>
+        <input Item="text" pInputText id="numberOfAllowedStudents" formControlName="numberOfAllowedStudents" placeholder="Number Of Allowed Students" required />
+        <div *ngIf="(eventForm.get('numberOfAllowedStudents').invalid && eventForm.get('numberOfAllowedStudents').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('numberOfAllowedStudents').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
       </div>
-    </div>
+
+      <div class="field col-4">
+        <label for="numberOfAllowedTeachers">Number Of Allowed Teachers *</label>
+        <input Item="text" pInputText id="numberOfAllowedTeachers" formControlName="numberOfAllowedTeachers" placeholder="Number Of Allowed Teachers" required />
+        <div *ngIf="(eventForm.get('numberOfAllowedTeachers').invalid && eventForm.get('numberOfAllowedTeachers').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('numberOfAllowedTeachers').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-4">
+        <label for="numberOfAllowedCompanies">Number Of Allowed Companies *</label>
+        <input Item="text" pInputText id="numberOfAllowedCompanies" formControlName="numberOfAllowedCompanies" placeholder="Number Of Allowed Companies" required />
+        <div *ngIf="(eventForm.get('numberOfAllowedCompanies').invalid && eventForm.get('numberOfAllowedCompanies').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('numberOfAllowedCompanies').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-4">
+        <label for="studentsPrice">Students Price*</label>
+        <input Item="text" pInputText id="studentsPrice" formControlName="studentsPrice" placeholder="Students Price" required />
+        <div *ngIf="(eventForm.get('studentsPrice').invalid && eventForm.get('studentsPrice').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('studentsPrice').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-4">
+        <label for="teachersPrice">Teachers Price*</label>
+        <input Item="text" pInputText id="teachersPrice" formControlName="teachersPrice" placeholder="Teachers Price" required />
+        <div *ngIf="(eventForm.get('teachersPrice').invalid && eventForm.get('teachersPrice').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('teachersPrice').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
+
+      <div class="field col-4">
+        <label for="companiesPrice">Companies Price*</label>
+        <input Item="text" pInputText id="companiesPrice" formControlName="companiesPrice" placeholder="Companies Price" required />
+        <div *ngIf="(eventForm.get('companiesPrice').invalid && eventForm.get('companiesPrice').dirty)">
+          <small class="ng-dirty ng-invalid" *ngIf="eventForm.get('companiesPrice').hasError('required')">
+            Obligatory.
+          </small>
+        </div>
+      </div>
 
   </form>
   </ng-template>
