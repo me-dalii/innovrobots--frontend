@@ -8,17 +8,25 @@
 <div class="grid p-6">
     <div class="col-4 col-offset-4">
         <div class="card" >
+          <div class="flex align-items-center justify-content-between mb-0">
+            <div class="font-medium text-3xl text-900 mb-3"></div>
+            <div>
+              <button (click)="addLogo()" pButton type="button" icon="pi pi-plus" class="p-button-text"></button>
+              <button *ngIf="event?.logo" (click)="deleteLogo()" pButton type="button" icon="pi pi-trash" class="p-button-text"></button>
+            </div>
+
+
+        </div>
             <div class="justify-content-between text-center">
                 <div class="text-center">                    
-                    <!-- <p-image *ngIf="event?.logo" [src]="getSrcFromCustomFile(event)" alt="" width="100px" height="100px" [preview]="true"></p-image>
-                    <img *ngIf="!event?.logo" src="./assets/images/Profile_placeholder.png" width="100px" height="100px"  alt=""/> -->
+                    <p-image *ngIf="event?.logo" [src]="chs?.getSrcFromCustomFile(event?.logo)" alt="event logo" width="190px" height="150px" [preview]="true"></p-image>
+                    <img *ngIf="!event?.logo" src="./assets/images/placeholder-image.png" width="190px" height="140px"  alt=""/> 
                     <div class="font-medium text-3xl text-900">{{event?.name}}</div>
-                
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-12">
+    <div class="col-8">
         <div class="card" >
             <div class="flex align-items-center justify-content-between mb-0">
                 <div class="font-medium text-3xl text-900 mb-3">About</div>
@@ -28,79 +36,79 @@
                 <div class="text-500 mb-5">About the event details.</div>
                 <ul class="list-none p-0 m-0">
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                        <div class="text-500 w-6 md:w-3 font-medium">Name</div>
-                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                        <div class="text-500 w-6 md:w-4 font-medium">Name</div>
+                        <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                             <div>{{event?.name }}</div>
                             <!-- <p-skeleton *ngIf="!dataLoaded" width="10rem" height="1.2rem" ></p-skeleton> -->
                         </div>
                     </li>
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                        <div class="text-500 w-6 md:w-3 font-medium">Description</div>
-                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                        <div class="text-500 w-6 md:w-4 font-medium">Description</div>
+                        <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                             <div>{{event?.description}}</div>
                             <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                         </div>
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                        <div class="text-500 w-6 md:w-3 font-medium">Start Date</div>
-                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                        <div class="text-500 w-6 md:w-4 font-medium">Start Date</div>
+                        <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                             <div>{{event?.eventDate | date : "MM/dd/yy"}} </div>
                             <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                         </div>
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                        <div class="text-500 w-6 md:w-3 font-medium">End Date</div>
-                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                        <div class="text-500 w-6 md:w-4 font-medium">End Date</div>
+                        <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                             <div>{{event?.endDate | date : "MM/dd/yy"}}</div>
                             <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                         </div>
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                        <div class="text-500 w-6 md:w-3 font-medium">Number Of Days</div>
-                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                        <div class="text-500 w-6 md:w-4 font-medium">Number Of Days</div>
+                        <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                             <div>{{event?.numberOfDays}}</div>
                             <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                         </div>
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                        <div class="text-500 w-6 md:w-3 font-medium">Location</div>
-                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                        <div class="text-500 w-6 md:w-4 font-medium">Location</div>
+                        <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                             <div>{{event?.place}}</div>
                             <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                         </div>
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                      <div class="text-500 w-6 md:w-3 font-medium">number Of Allowed Students | Price</div>
-                      <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                      <div class="text-500 w-6 md:w-4 font-medium">Number Of Allowed Students | Price</div>
+                      <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                           <div>{{event?.numberOfAllowedStudents}} {{event?.studentsPrice}}</div>
                           <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                       </div>
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                      <div class="text-500 w-6 md:w-3 font-medium">number Of Allowed Teachers | Price</div>
-                      <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                      <div class="text-500 w-6 md:w-4 font-medium">Number Of Allowed Teachers | Price</div>
+                      <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                           <div>{{event?.numberOfAllowedTeachers}} {{event?.teachersPrice}}</div>
                           <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                       </div>
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                      <div class="text-500 w-6 md:w-3 font-medium">number Of Allowed Companies | Price</div>
-                      <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                      <div class="text-500 w-6 md:w-4 font-medium">Number Of Allowed Companies | Price</div>
+                      <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                           <div>{{event?.numberOfAllowedCompanies}} {{event?.companiesPrice}}</div>
                           <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                       </div>
                     </li>
                     
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                        <div class="text-500 w-6 md:w-3 font-medium">Status</div>
-                        <div class="text-900 w-full md:w-9 md:flex-order-0 flex-order-1">
+                        <div class="text-500 w-6 md:w-4 font-medium">Status</div>
+                        <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
                             <div>
                                 <p-tag *ngIf="event?.status == true" styleClass="mr-2" icon="pi pi-check" severity="success" value="Active"></p-tag>
                                 <p-tag *ngIf="event?.status == null" styleClass="mr-2" icon="pi pi-clock" severity="warning" value="New Inactive"></p-tag>
@@ -112,6 +120,25 @@
                 </ul>
             </div>
         </div>
+    </div>
+    <div class="col-4">
+      <div class="card" >
+          <div class="flex align-items-center justify-content-between mb-0">
+              <div class="font-medium text-3xl text-900 mb-3">Poster</div>
+              <div>
+                <button (click)="addPoster()" pButton type="button" icon="pi pi-plus" class="p-button-text"></button>
+                <button *ngIf="event?.poster" (click)="deletePoster()" pButton type="button" icon="pi pi-trash" class="p-button-text"></button>
+              </div>
+          </div>
+          <div class="surface-section">
+              <div class="text-500 mb-5">Event Official Poster.</div>
+              <div class="text-center">
+                <p-image *ngIf="event?.poster" [src]="chs?.getSrcFromCustomFile(event?.poster)" alt="event logo" width="190px" height="300px" [preview]="true"></p-image>
+                <img *ngIf="!event?.poster" src="./assets/images/placeholder-image.png" width="190px" height="140px"  alt=""/> 
+              </div>
+              
+          </div>
+      </div>
     </div>
     <div class="col-12">
       <div class="card">
@@ -365,7 +392,7 @@
           </p-tabPanel>
           <p-tabPanel header="Participants" >
             
-            <div *ngIf="showMenu" class="surface-section px-4 py-4 md:px-6 lg:px-8 text-center">
+            <div *ngIf="showMenu" class="surface-section px-4 py-4 md:px-6 lg:px-8 text-center fadeinright animation-duration-400 ">
               <div class="mb-3 md:mt-6 font-bold text-2xl">
                   <span class="text-900">Participants </span>
                   <span class="text-blue-600">Management</span>
@@ -397,15 +424,26 @@
             </div>
 
             <div *ngIf="showStudent">
-              <div class="grid text-center">
-                <div class="col-12 md:col-4 md:col-offset-4 mb-2 px-5">
-                    <span class="p-3 shadow-2 mb-3 inline-block surface-card" style="border-radius: 10px">
-                        <i class="pi pi-user text-4xl text-blue-500"></i>
-                    </span>
-                    <div class="text-900 mb-3 font-medium">Student</div>
-                    <span class="text-700 text-sm line-height-3">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</span>
+              <div class="flex justify-content-between flex-wrap card-container purple-container fadeindown animation-duration-500 ">
+                <div class="flex align-items-center justify-content-center w-4rem h-4rem">
+                  <p-button icon="pi pi-arrow-left" styleClass="p-button-lg" (click)="backToMenu()"></p-button>
+                  
+                </div>
+                <div class="flex align-items-center justify-content-center w-30rem ">
+                  <div class="grid text-center">
+                    <div class="col-12 md:col-4 md:col-offset-4 mb-2 px-5">
+                        <span class="p-3 shadow-2 mb-3 inline-block surface-card" style="border-radius: 10px">
+                            <i class="pi pi-user text-4xl text-blue-500"></i>
+                        </span>
+                        <div class="text-900 mb-3 font-medium">Students</div>
+                        <span class="text-700 text-sm line-height-3">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex align-items-center justify-content-center w-4rem h-4rem ">
                 </div>
               </div>
+              
               <p-toolbar styleClass="mb-1">
                 <div class="p-toolbar-group-left">
                   <div class="my-2">
@@ -416,10 +454,10 @@
                   </div>
                 </div>
                 <div class="p-toolbar-group-right">
-                  <p-button icon="pi pi-arrow-left" (click)="backToMenu()"></p-button>
+                  <button type="button" pButton pRipple label="Export CSV" icon="pi pi-file-export" (click)="dts.exportCSV()" class="ml-2 p-button-help" pTooltip="CSV" tooltipPosition="bottom"></button>
               </div>
               </p-toolbar>
-              <p-table #dts [value]="event?.students" responsiveLayout="scroll"
+              <p-table #dts [value]="event?.students" exportFilename="Students_Participants" [columns]="studentsCols" responsiveLayout="scroll"
                 [globalFilterFields]="['firstName,lastName']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
                 [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [(selection)]="selectedStudents" selectionMode="multiple" [rowHover]="true" dataKey="id">
@@ -502,13 +540,23 @@
 
             <div *ngIf="showTeacher">
 
-              <div class="grid text-center">
-                <div class="col-12 md:col-4 md:col-offset-4 mb-2 px-5">
-                    <span class="p-3 shadow-2 mb-3 inline-block surface-card" style="border-radius: 10px">
-                        <i class="pi pi-briefcase text-4xl text-blue-500"></i>
-                    </span>
-                    <div class="text-900 mb-3 font-medium">Educator</div>
-                    <span class="text-700 text-sm line-height-3">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</span>
+              <div class="flex justify-content-between flex-wrap card-container purple-container fadeindown animation-duration-500 ">
+                <div class="flex align-items-center justify-content-center w-4rem h-4rem">
+                  <p-button icon="pi pi-arrow-left" styleClass="p-button-lg" (click)="backToMenu()"></p-button>
+
+                </div>
+                <div class="flex align-items-center justify-content-center w-30rem ">
+                  <div class="grid text-center">
+                    <div class="col-12 md:col-4 md:col-offset-4 mb-2 px-5">
+                        <span class="p-3 shadow-2 mb-3 inline-block surface-card" style="border-radius: 10px">
+                            <i class="pi pi-briefcase text-4xl text-blue-500"></i>
+                        </span>
+                        <div class="text-900 mb-3 font-medium">Educators</div>
+                        <span class="text-700 text-sm line-height-3">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex align-items-center justify-content-center w-4rem h-4rem ">
                 </div>
               </div>
               <p-toolbar styleClass="mb-1">
@@ -521,10 +569,10 @@
                   </div>
                 </div>
                 <div class="p-toolbar-group-right">
-                  <p-button icon="pi pi-arrow-left" (click)="backToMenu()"></p-button>
+                  <button type="button" pButton pRipple label="Export CSV" icon="pi pi-file-export" (click)="dtt.exportCSV()" class="ml-2 p-button-help" pTooltip="CSV" tooltipPosition="bottom"></button>
               </div>
               </p-toolbar>
-              <p-table #dtt [value]="event?.teachers" responsiveLayout="scroll"
+              <p-table #dtt [value]="event?.teachers" responsiveLayout="scroll" exportFilename="Teachers_Participants" [columns]="educatorsCols"
                 [globalFilterFields]="['firstName,lastName']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
                 [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [(selection)]="selectedTeachers" selectionMode="multiple" [rowHover]="true" dataKey="id">
@@ -602,16 +650,27 @@
             </div>
 
             <div *ngIf="showCompany">
-              
-              <div class="grid text-center">
-                <div class="col-12 md:col-4 md:col-offset-4 mb-2 px-5">
-                    <span class="p-3 shadow-2 mb-3 inline-block surface-card" style="border-radius: 10px">
-                        <i class="pi pi-building text-4xl text-blue-500"></i>
-                    </span>
-                    <div class="text-900 mb-3 font-medium">Company</div>
-                    <span class="text-700 text-sm line-height-3">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</span>
+
+              <div class="flex justify-content-between flex-wrap card-container purple-container fadeindown animation-duration-500 ">
+                <div class="flex align-items-center justify-content-center w-4rem h-4rem">
+                  <p-button icon="pi pi-arrow-left" styleClass="p-button-lg" (click)="backToMenu()"></p-button>
+
+                </div>
+                <div class="flex align-items-center justify-content-center w-30rem ">
+                  <div class="grid text-center">
+                    <div class="col-12 md:col-4 md:col-offset-4 mb-2 px-5">
+                        <span class="p-3 shadow-2 mb-3 inline-block surface-card" style="border-radius: 10px">
+                            <i class="pi pi-building text-4xl text-blue-500"></i>
+                        </span>
+                        <div class="text-900 mb-3 font-medium">Companies</div>
+                        <span class="text-700 text-sm line-height-3">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex align-items-center justify-content-center w-4rem h-4rem ">
                 </div>
               </div>
+              
               <p-toolbar styleClass="mb-1">
                 <div class="p-toolbar-group-left">
                   <div class="my-2">
@@ -622,10 +681,10 @@
                   </div>
                 </div>
                 <div class="p-toolbar-group-right">
-                  <p-button icon="pi pi-arrow-left" (click)="backToMenu()"></p-button>
+                  <button type="button" pButton pRipple label="Export CSV" icon="pi pi-file-export" (click)="dtc.exportCSV()" class="ml-2 p-button-help" pTooltip="CSV" tooltipPosition="bottom"></button>
               </div>
               </p-toolbar>
-              <p-table #dtc [value]="event?.companies" responsiveLayout="scroll"
+              <p-table #dtc [value]="event?.companies" responsiveLayout="scroll" exportFilename="Companies_Participants" [columns]="companiesCols"
                 [globalFilterFields]="['name']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]"
                 [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                 [(selection)]="selectedCompanies" selectionMode="multiple" [rowHover]="true" dataKey="id">
@@ -707,6 +766,71 @@
         
       </div>
     </div>
+    <div class="col-12">
+      <div class="card" >
+          <div class="flex align-items-center justify-content-between mb-0">
+              <div class="font-medium text-3xl text-900 mb-3">Media</div>
+          </div>
+          <div class="surface-section">
+              <div class="text-500 mb-5">Event Media Manager.</div>
+              <p-tabView>
+
+                <p-tabPanel header="Album">
+
+                  
+                </p-tabPanel>
+
+
+                <p-tabPanel header="Teaser">
+
+                  <div class="grid p-fluid">
+                    <div class="col-12 md:col-12 text-center">
+                        <div class="p-inputgroup">
+                          <span class="p-inputgroup-addon">
+                              <i class="pi pi-youtube"></i>
+                          </span>
+                          <span class="p-float-label">
+                              <input type="text" id="inputgroup" pInputText [(ngModel)]="teaserLink"> 
+                              <label for="inputgroup">Youtube Embed link for the event Teaser</label>
+                          </span>
+
+                          <button  (click)="saveTeaser()" type="button" pButton pRipple icon="pi pi-save" styleClass="p-button-warn"></button>
+                          <button *ngIf="event?.youtubeTeaserLink" (click)="resetTeaser()" type="button" pButton pRipple icon="pi pi-trash" styleClass="p-button-danger"></button>
+
+                       </div>
+                      <iframe class="mt-5" width="560" height="315" [src]="event?.youtubeTeaserLink | safe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                  </div>
+
+                </p-tabPanel>                
+                
+                <p-tabPanel header="Live Stream">
+
+                  <div class="grid p-fluid">
+                    <div class="col-12 md:col-12 text-center">
+                        <div class="p-inputgroup">
+                          <span class="p-inputgroup-addon">
+                              <i class="pi pi-youtube"></i>
+                          </span>
+                          <span class="p-float-label">
+                              <input type="text" id="inputgroup" pInputText [(ngModel)]="liveStreamLink"> 
+                              <label for="inputgroup">Youtube Embed link for the event Live Stream</label>
+                          </span>
+
+                          <button  (click)="saveLiveStream()" type="button" pButton pRipple icon="pi pi-save" styleClass="p-button-warn"></button>
+                          <button *ngIf="event?.youtubeLiveStreamLink" (click)="resetLiveStream()" type="button" pButton pRipple icon="pi pi-trash" styleClass="p-button-danger"></button>
+
+                       </div>
+                      <iframe class="mt-5" width="560" height="315" [src]="event?.youtubeLiveStreamLink | safe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                  </div>
+
+                </p-tabPanel>
+
+              </p-tabView>
+          </div>
+      </div>
+  </div>
 </div>
 
 <p-dialog header="Event Details" [(visible)]="eventDetailsDialog" [modal]="true" [style]="{width: '70%'}" class="p-fluid">
@@ -1572,5 +1696,63 @@
     <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
       (click)="deleteCompaniesDialog = false"></button>
     <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteCompanies()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Logo dialog Section-->
+
+<p-dialog [(visible)]="logoDialog" header="Add Logo" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center mb-4">
+    <!-- <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i> -->
+    <span>Add new logo for this event.</span>
+  </div>
+  <p-fileUpload id="fu" accept="image/png, image/jpeg" id="document" (onSelect)="onSelectLogo($event)" [showCancelButton]=false (onRemove)="onRemoveLogo()" maxFileSize="10000000" invalidFileSizeMessageDetail= "la taille de fichier maximale est de 10 Mo."
+  [showUploadButton]=false>
+  </p-fileUpload>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Cancel"
+      (click)="logoDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Save" (click)="saveLogo()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deleteLogoDialog" header="Confirm Delete" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center mb-4">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span>Are you sure to delete the current picture?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+      (click)="deleteLogoDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeleteLogo()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Poster dialog Section-->
+
+<p-dialog [(visible)]="posterDialog" header="Add Poster" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center mb-4">
+    <!-- <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i> -->
+    <span>Add new Poster for this event.</span>
+  </div>
+  <p-fileUpload accept="image/png, image/jpeg" id="document" (onSelect)="onSelectPoster($event)" [showCancelButton]=false (onRemove)="onRemovePoster()" maxFileSize="10000000" invalidFileSizeMessageDetail= "la taille de fichier maximale est de 10 Mo."
+  [showUploadButton]=false>
+  </p-fileUpload>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Cancel"
+      (click)="posterDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Save" (click)="savePoster()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="deletePosterDialog" header="Confirm Delete" [modal]="true" [style]="{width:'40%'}">
+  <div class="flex align-items-center justify-content-center mb-4">
+    <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+    <span>Are you sure to delete the current poster?</span>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
+      (click)="deletePosterDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeletePoster()"></button>
   </ng-template>
 </p-dialog>

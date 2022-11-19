@@ -5,6 +5,7 @@ import { Speaker } from "./Speaker";
 import { Student } from "./Student";
 import { Teacher } from "./Teacher";
 import { Company } from "./Company";
+import { CustomFile } from "./CustomFile";
 
 export interface Event extends AbstractEntity{
     name? : string;
@@ -13,6 +14,10 @@ export interface Event extends AbstractEntity{
     endDate? : Date;
     numberOfDays? : number;
     place? : string;
+
+    youtubeTeaserLink? : string;
+    youtubeLiveStreamLink? : string;
+
 
     status? : boolean;
 
@@ -31,5 +36,10 @@ export interface Event extends AbstractEntity{
     companies? : Company[];
     numberOfAllowedCompanies? : number;
     companiesPrice? : number;
+
+    logo? : CustomFile;
+    banner? : CustomFile;
+    poster? : CustomFile;
+
 
 }

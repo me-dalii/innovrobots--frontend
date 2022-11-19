@@ -65,6 +65,7 @@ import { TeacherComponent } from './components/registration/teacher/teacher.comp
 import { CompanyComponent } from './components/registration/company/company.component';
 import { StudentComponent } from './components/registration/student/student.component';
 import { SuccessComponent } from './components/success/success.component';
+import { SafePipe } from './pipes/safe.pipe';
 
 
 @NgModule({
@@ -77,7 +78,8 @@ import { SuccessComponent } from './components/success/success.component';
     TeacherComponent,
     CompanyComponent,
     StudentComponent,
-    SuccessComponent
+    SuccessComponent,
+    SafePipe
   ],
   imports: [
     BrowserModule,

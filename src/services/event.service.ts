@@ -36,4 +36,45 @@ export class EventService {
   public activateEvent(id : Number):Observable<any>{
     return this.http.put<any>(`${this.host}${id}`,null);
   }
+
+  public saveLogo(id : number, formData : FormData):Observable<Event>{
+    return this.http.post<Event>(`${this.host}logo/${id}`, formData);
+  }
+
+  public deleteLogo(id : Number):Observable<Event>{
+    return this.http.delete<Event>(`${this.host}logo/${id}`);
+  }
+
+  public saveBanner(id : number, formData : FormData):Observable<Event>{
+    return this.http.post<Event>(`${this.host}banner/${id}`, formData);
+  }
+
+  public deleteBanner(id : Number):Observable<Event>{
+    return this.http.delete<Event>(`${this.host}banner/${id}`);
+  }
+
+  public savePoster(id : number, formData : FormData):Observable<Event>{
+    return this.http.post<Event>(`${this.host}poster/${id}`, formData);
+  }
+
+  public deletePoster(id : Number):Observable<Event>{
+    return this.http.delete<Event>(`${this.host}poster/${id}`);
+  }
+
+  public saveTeaser(id : number, link : string):Observable<any>{
+    return this.http.post<any>(`${this.host}teaser/${id}`, link);
+  }
+
+  public resetTeaser(id : Number):Observable<any>{
+    return this.http.delete<any>(`${this.host}teaser/${id}`);
+  }
+
+  public saveLiveStream(id : number, link : string):Observable<any>{
+    return this.http.post<any>(`${this.host}liveStream/${id}`, link);
+  }
+
+  public resetLiveStream(id : Number):Observable<any>{
+    return this.http.delete<any>(`${this.host}liveStream/${id}`);
+  }
+
 }

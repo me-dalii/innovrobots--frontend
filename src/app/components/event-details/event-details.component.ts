@@ -19,6 +19,7 @@ import { Teacher } from 'src/models/Teacher';
 import { TeacherService } from 'src/services/teacher.service';
 import { Company } from 'src/models/Company';
 import { CompanyService } from 'src/services/company.service';
+import { CustomFileHandlerService } from 'src/services/CustomFileHandler/custom-file-handler.service';
 
 @Component({
   selector: 'app-event-details',
@@ -85,14 +86,14 @@ export class EventDetailsComponent implements OnInit {
   deleteTeachersDialog: boolean = false;
   teacherForm: FormGroup;
 
-    //Company
-    companies: Company[];
-    selectedCompanies : Company[];
-    company : Company;
-    companyDialog : boolean;
-    deleteCompanyDialog: boolean = false;
-    deleteCompaniesDialog: boolean = false;
-    companyForm: FormGroup;
+  //Company
+  companies: Company[];
+  selectedCompanies : Company[];
+  company : Company;
+  companyDialog : boolean;
+  deleteCompanyDialog: boolean = false;
+  deleteCompaniesDialog: boolean = false;
+  companyForm: FormGroup;
 
   items: MenuItem[];
 
@@ -104,9 +105,33 @@ export class EventDetailsComponent implements OnInit {
   uni = University;
   unis = [];
 
+  logoDialog : boolean;
+  deleteLogoDialog : boolean;
+  logo_file: any;
 
-  constructor(private route: ActivatedRoute, private sponsorService: SponsorService, private eventService: EventService, private committeeService: CommitteeService, 
-    private messageService: MessageService, private companyService: CompanyService, private teacherService: TeacherService, private speakerService: SpeakerService, private  studentService: StudentService) { }
+  posterDialog : boolean;
+  deletePosterDialog : boolean;
+  poster_file: any;
+
+
+  //exportVariables
+  studentsCols: any[] = [];
+  educatorsCols: any[] = [];
+  companiesCols: any[] = [];
+
+  teaserLink : string;
+  liveStreamLink : string;
+
+  constructor(private route: ActivatedRoute, 
+    private sponsorService: SponsorService, 
+    private eventService: EventService, 
+    private committeeService: CommitteeService, 
+    private messageService: MessageService, 
+    private companyService: CompanyService,
+    private teacherService: TeacherService, 
+    private speakerService: SpeakerService, 
+    private studentService: StudentService,
+    private chs : CustomFileHandlerService) { }
 
   ngOnInit(): void {
     this.showMenu = true;
@@ -124,6 +149,7 @@ export class EventDetailsComponent implements OnInit {
           items: [{
                   label: 'Export', 
                   icon: 'pi pi-fw pi-download',
+
               }
           ]
       },
@@ -216,6 +242,41 @@ export class EventDetailsComponent implements OnInit {
     });
 
 
+    this.studentsCols = [
+      
+      { field: 'creationDate', header: 'Creation Date' },
+      { field: 'firstName', header: 'First Name', },
+      { field: 'lastName', header: 'Last Name' },
+      { field: 'email', header: 'Email' },
+      { field: 'phone', header: 'Phone' },
+      { field: 'dob', header: 'Date of Birth' },
+      { field: 'gender', header: 'Gender' },
+      { field: 'dob', header: 'Date of Birth' },
+      { field: 'university', header: 'University' },
+      { field: 'grade', header: 'Grade', },
+    ];
+
+    this.educatorsCols = [
+      { field: 'creationDate', header: 'Creation Date' },
+      { field: 'firstName', header: 'First Name', },
+      { field: 'lastName', header: 'Last Name' },
+      { field: 'email', header: 'Email' },
+      { field: 'phone', header: 'Phone' },
+      { field: 'dob', header: 'Date of Birth' },
+      { field: 'gender', header: 'Gender' },
+      { field: 'dob', header: 'Date of Birth' },
+      { field: 'university', header: 'University' }
+    ];
+
+    this.companiesCols = [
+      { field: 'creationDate', header: 'Creation Date' },
+      { field: 'name', header: 'Name', },
+      { field: 'description', header: 'Description' },
+      { field: 'email', header: 'Email' },
+      { field: 'phone', header: 'Phone' },
+      { field: 'address', header: 'Address' },
+    ];
+
   }
 
   getEvent() {
@@ -229,6 +290,8 @@ export class EventDetailsComponent implements OnInit {
         this.getStudents();
         this.getTeachers();
         this.getCompanies();
+        this.teaserLink = this.event.youtubeTeaserLink;
+        this.liveStreamLink = this.event.youtubeLiveStreamLink;
       }
     })
   }
@@ -821,7 +884,7 @@ export class EventDetailsComponent implements OnInit {
     for(let company of this.selectedCompanies){
       this.companyService.deleteCompany(company.id).subscribe({
         next: (response: Company) => {
-          this.messageService.add({ severity: 'success', summary: 'success', detail: 'Company Deleted', life: 3000 });
+          this.messageService.add({ severity: 'success', summary: 'success', detail: 'Teacher Deleted', life: 3000 });
           this.getCompanies();
         },
         error: (e) => {
@@ -858,5 +921,191 @@ export class EventDetailsComponent implements OnInit {
     this.showTeacher = false;
     this.showStudent = false;
   }
+
+  //logo
+  addLogo(){
+    this.logoDialog = true;
+  }
+
+  onSelectLogo(event){
+    this.logo_file = event.files[0];
+    if(this.logo_file.size < 10000000){
+      this.messageService.add({severity: 'info', summary: 'Success', detail: 'Ficher selectionneé'});
+    }else{
+      this.messageService.add({severity: 'info', summary: 'Success', detail: 'Too large'});
+    }
+  }
+
+  onRemoveLogo(){
+    this.logo_file = null;
+    this.messageService.add({severity: 'info', summary: 'Success', detail: 'Removed'});
+  }
+
+  saveLogo(){
+    const formData: FormData = new FormData();
+    //formData.append('logo_file', null, null);
+    if (this.logo_file != null) {
+      formData.append('logo_file', this.logo_file, this.logo_file?.name);
+    }
+    console.log(formData)
+    this.eventService.saveLogo(this.event.id, formData).subscribe({
+      next: (response: Event) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Logo updated', life: 3000 });
+        this.getEvent();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.logoDialog = false
+    })
+  }
+
+  deleteLogo(){
+    this.deleteLogoDialog = true;
+  }
+
+  confirmDeleteLogo(){
+    this.eventService.deleteLogo(this.event.id).subscribe({
+      next: (response: Event) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Logo deleted', life: 3000 });
+        this.getEvent();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.deleteLogoDialog = false
+    })
+
+  }
+
+  //poster
+  addPoster(){
+    this.posterDialog = true;
+  }
+
+  onSelectPoster(event){
+    this.poster_file = event.files[0];
+    if(this.poster_file.size < 10000000){
+      this.messageService.add({severity: 'info', summary: 'Success', detail: 'Poster Uploaded'});
+    }else{
+      this.messageService.add({severity: 'info', summary: 'Success', detail: 'Too large'});
+    }
+  }
+  
+  onRemovePoster(){
+    this.poster_file = null;
+    this.messageService.add({severity: 'info', summary: 'Success', detail: 'Removed'});
+  }
+
+  savePoster(){
+    const formData: FormData = new FormData();
+    if (this.poster_file != null) {
+      formData.append('poster_file', this.poster_file, this.poster_file?.name);
+    }
+    this.eventService.savePoster(this.event.id, formData).subscribe({
+      next: (response: Event) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Poster added', life: 3000 });
+        this.getEvent();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.posterDialog = false
+    })
+  }
+
+  deletePoster(){
+    this.deletePosterDialog = true;
+  }
+
+  confirmDeletePoster(){
+    this.eventService.deletePoster(this.event.id).subscribe({
+      next: (response: Event) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Poster deleted', life: 3000 });
+        this.getEvent();
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.deletePosterDialog = false
+    })
+
+  }
+
+  //teaser
+  saveTeaser(){
+
+    //check if link does contain the word embed
+    if(this.teaserLink.includes("embed")){
+      this.eventService.saveTeaser(this.event.id, this.teaserLink).subscribe({
+        next: (response: any) => {
+          console.log(response.link);
+          this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Teaser Link Saved', life: 3000 });
+          this.event.youtubeTeaserLink = response.link;
+        },
+        error: (e) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+        },
+        complete: () => this.teaserLink = this.event.youtubeTeaserLink
+      })
+    }else{
+      this.messageService.add({ severity: 'error', summary: 'NOT EMBED', detail: 'Please Make the youtube link embed', life: 3000 });
+    }
+
+   
+  }
+
+  resetTeaser(){
+    this.eventService.resetTeaser(this.event.id).subscribe({
+      next: (response: any) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Teaser Deleted', life: 3000 });
+        this.event.youtubeTeaserLink = null;
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.teaserLink = this.event.youtubeTeaserLink
+    })
+
+  }
+
+
+  //liveStream
+  saveLiveStream(){
+
+    //check if link does contain the word embed
+    if(this.liveStreamLink.includes("embed")){
+      this.eventService.saveLiveStream(this.event.id, this.liveStreamLink).subscribe({
+        next: (response: any) => {
+          this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event LiveStream Link Saved', life: 3000 });
+          this.event.youtubeLiveStreamLink = response.link;
+        },
+        error: (e) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+        },
+        complete: () => this.liveStreamLink = this.event.youtubeLiveStreamLink
+      })
+    }else{
+      this.messageService.add({ severity: 'error', summary: 'NOT EMBED', detail: 'Please Make the youtube link embed', life: 3000 });
+    }
+
+   
+  }
+
+  resetLiveStream(){
+    this.eventService.resetLiveStream(this.event.id).subscribe({
+      next: (response: any) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event LiveStream Deleted', life: 3000 });
+        this.event.youtubeLiveStreamLink = null;
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => this.liveStreamLink = this.event.youtubeLiveStreamLink
+    })
+
+  }
+
+
 
 }

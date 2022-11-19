@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { Event } from 'src/models/Event';
+import { CustomFileHandlerService } from 'src/services/CustomFileHandler/custom-file-handler.service';
 import { EventService } from 'src/services/event.service';
 
 @Component({
@@ -27,7 +28,10 @@ export class EventComponent implements OnInit {
 
 
 
-  constructor(private messageService: MessageService, private eventService : EventService, private router: Router) { }
+  constructor(private messageService: MessageService, 
+    private eventService : EventService, 
+    private router: Router,
+    private chs : CustomFileHandlerService) { }
 
   ngOnInit(): void {
 
