@@ -66,6 +66,11 @@ import { CompanyComponent } from './components/registration/company/company.comp
 import { StudentComponent } from './components/registration/student/student.component';
 import { SuccessComponent } from './components/success/success.component';
 import { SafePipe } from './pipes/safe.pipe';
+import {GalleriaModule} from 'primeng/galleria';
+import { PreviousEditionsComponent } from './components/previous-editions/previous-editions.component';
+import { LiveComponent } from './components/live/live.component';
+import { PeDetailsComponent } from './components/previous-editions/pe-details/pe-details.component';
+import { PeAllComponent } from './components/previous-editions/pe-all/pe-all.component';
 
 
 @NgModule({
@@ -79,7 +84,11 @@ import { SafePipe } from './pipes/safe.pipe';
     CompanyComponent,
     StudentComponent,
     SuccessComponent,
-    SafePipe
+    SafePipe,
+    PreviousEditionsComponent,
+    LiveComponent,
+    PeDetailsComponent,
+    PeAllComponent
   ],
   imports: [
     BrowserModule,
@@ -138,7 +147,8 @@ import { SafePipe } from './pipes/safe.pipe';
     MenubarModule,
     RippleModule,
     CarouselModule,
-    ScrollTopModule
+    ScrollTopModule,
+    GalleriaModule
   ],
   providers: [],
   bootstrap: [AppComponent]

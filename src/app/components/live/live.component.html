@@ -1,0 +1,11 @@
+
+
+<div class="text-center mb-5 mt-3">
+    <img [src]="chs?.getSrcFromCustomFile(event?.logo)" alt="Image" height="100" class="mb-3">
+    <div class="text-900 text-3xl font-medium mb-3">{{event?.name}}</div>
+    <span class="text-600 font-medium line-height-3">Live Stream</span>
+</div>
+
+<div class="text-center">
+    <iframe class="mt-5" width="60%" height="400px" [src]="event?.youtubeLiveStreamLink | safe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>

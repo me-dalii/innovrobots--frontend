@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -6,6 +6,7 @@ import { CompanyService } from 'src/services/company.service';
 import { EventService } from 'src/services/event.service';
 import { Event } from 'src/models/Event';
 import { Company } from 'src/models/Company';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-company',
@@ -13,7 +14,7 @@ import { Company } from 'src/models/Company';
   styleUrls: ['./company.component.scss'],
   providers: [MessageService]
 })
-export class CompanyComponent implements OnInit {
+export class CompanyComponent implements OnInit, OnDestroy {
 
   valCheck: string[] = ['remember'];
 
@@ -21,13 +22,16 @@ export class CompanyComponent implements OnInit {
 
   event : Event;
 
-  constructor(private messageService: MessageService, private router : Router, private companyService: CompanyService,
-     private eventService: EventService) { }
+  subscriptions : Subscription[] = []
+
+  constructor(private messageService: MessageService, 
+    private router : Router, 
+    private companyService: CompanyService,
+    private eventService: EventService) { }
 
   ngOnInit(): void {
 
     this.getActivatedEvent();
-
 
     this.companyForm = new FormGroup({
       name: new FormControl(''),
@@ -38,18 +42,22 @@ export class CompanyComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    for(let subscription of this.subscriptions){
+      subscription.unsubscribe()
+    }
+  }
+
   getActivatedEvent(){
-    this.eventService.getActivatedEvent().subscribe(
-      (data) => {
-        this.event = data;
-      }
-    )
+    this.subscriptions.push(this.eventService.getActivatedEvent().subscribe(
+      (data) => {this.event = data}
+    ))
   }
   
   saveCompany(){
     let company = this.companyForm.value;
     company.event = this.event;
-    this.companyService.saveCompany(company).subscribe({
+    this.subscriptions.push(this.companyService.saveCompany(company).subscribe({
       next: (response: Company) => {
         this.companyForm.reset();
         // this.messageService.add({ severity: 'success', summary: 'success', detail: 'Student Added', life: 3000 });
@@ -65,6 +73,6 @@ export class CompanyComponent implements OnInit {
         }
       },
       complete: () => {}
-    })
+    }))
   }
 }

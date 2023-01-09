@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MenuItem, MessageService } from 'primeng/api';
 import { EventService } from 'src/services/event.service';
@@ -20,14 +20,17 @@ import { TeacherService } from 'src/services/teacher.service';
 import { Company } from 'src/models/Company';
 import { CompanyService } from 'src/services/company.service';
 import { CustomFileHandlerService } from 'src/services/CustomFileHandler/custom-file-handler.service';
+import { PhotoService } from 'src/services/photo.service';
+import { Photo } from 'src/models/Photo';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-event-details',
   templateUrl: './event-details.component.html',
   styleUrls: ['./event-details.component.scss'],
-  providers: [MessageService]
+  providers: [MessageService],
 })
-export class EventDetailsComponent implements OnInit {
+export class EventDetailsComponent implements OnInit, OnDestroy {
 
   pathId: number;
 
@@ -122,6 +125,34 @@ export class EventDetailsComponent implements OnInit {
   teaserLink : string;
   liveStreamLink : string;
 
+  albumDialog : boolean;
+  album_files: any;
+
+  responsiveOptions2:any[] = [
+    {
+        breakpoint: '1500px',
+        numVisible: 5
+    },
+    {
+        breakpoint: '1024px',
+        numVisible: 3
+    },
+    {
+        breakpoint: '768px',
+        numVisible: 2
+    },
+    {
+        breakpoint: '560px',
+        numVisible: 1
+    }
+  ];
+
+  activeIndex: number = 0;
+  displayCustom: boolean;
+
+  subscriptions : Subscription[] = [];
+
+
   constructor(private route: ActivatedRoute, 
     private sponsorService: SponsorService, 
     private eventService: EventService, 
@@ -131,8 +162,10 @@ export class EventDetailsComponent implements OnInit {
     private teacherService: TeacherService, 
     private speakerService: SpeakerService, 
     private studentService: StudentService,
-    private chs : CustomFileHandlerService) { }
+    private photoService: PhotoService,
+    public chs : CustomFileHandlerService) { }
 
+  
   ngOnInit(): void {
     this.showMenu = true;
     this.pathId = parseInt(this.route.snapshot.paramMap.get('id'));
@@ -279,8 +312,14 @@ export class EventDetailsComponent implements OnInit {
 
   }
 
+  ngOnDestroy(): void {
+    for(let subscription of this.subscriptions){
+      subscription.unsubscribe();
+    }
+  }
+
   getEvent() {
-    this.eventService.getEventById(this.pathId).subscribe({
+    this.subscriptions.push(this.eventService.getEventById(this.pathId).subscribe({
       next: (response: Event) => this.event = response,
       error: (e) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Loading Failed', life: 3000 }),
       complete: () => {
@@ -292,8 +331,10 @@ export class EventDetailsComponent implements OnInit {
         this.getCompanies();
         this.teaserLink = this.event.youtubeTeaserLink;
         this.liveStreamLink = this.event.youtubeLiveStreamLink;
+        this.getPhotosByEvent();
+
       }
-    })
+    }))
   }
 
   toLanding(){
@@ -337,7 +378,7 @@ export class EventDetailsComponent implements OnInit {
       'companiesPrice': this.eventForm.get('companiesPrice').value,
     }
 
-    this.eventService.saveEvent(this.event).subscribe({
+    this.subscriptions.push(this.eventService.saveEvent(this.event).subscribe({
       next: (response: Event) => {
         this.eventForm.reset();
         this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Event Added', life: 3000 });
@@ -347,20 +388,20 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Failed', life: 3000 });
       },
       complete: () => this.eventDetailsDialog = false
-    })
+    }))
   
   }
 
   //speaker methods
   getSpeakers(){
-    this.speakerService.getSpeakersByEventId(this.pathId).subscribe({
+    this.subscriptions.push(this.speakerService.getSpeakersByEventId(this.pathId).subscribe({
       next: (response: Speaker[]) => {
         this.speakers = response;
         this.event.speakers = response;
       },
       error: (e) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Loading Failed', life: 3000 }),
       complete: () => {}
-    })
+    }))
   }
 
   saveSpeaker(){
@@ -375,7 +416,7 @@ export class EventDetailsComponent implements OnInit {
       'cin' : this.speakerForm.get('cin').value,
       'event' : this.event
     }
-    this.speakerService.saveSpeaker(this.speaker).subscribe({
+    this.subscriptions.push(this.speakerService.saveSpeaker(this.speaker).subscribe({
       next: (response: Speaker) => {
         this.speakerForm.reset();
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Speaker Added', life: 3000 });
@@ -385,7 +426,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.speakerDialog = false
-    })
+    }))
   }
 
   openNewSpeaker(){
@@ -415,7 +456,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   confirmDeleteSpeaker(){
-    this.speakerService.deleteSpeaker(this.speaker.id).subscribe({
+    this.subscriptions.push(this.speakerService.deleteSpeaker(this.speaker.id).subscribe({
       next: (response: Speaker) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Speaker Deleted', life: 3000 });
         this.getSpeakers();
@@ -424,12 +465,12 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.deleteSpeakerDialog = false
-    })
+    }))
   }
 
   confirmDeleteSpeakers(){
     for(let speaker of this.selectedSpeakers){
-      this.speakerService.deleteSpeaker(speaker.id).subscribe({
+      this.subscriptions.push(this.speakerService.deleteSpeaker(speaker.id).subscribe({
         next: (response: Speaker) => {
           this.messageService.add({ severity: 'success', summary: 'success', detail: 'Speaker Deleted', life: 3000 });
           this.getSpeakers();
@@ -438,7 +479,7 @@ export class EventDetailsComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
         },
         complete: () => {this.deleteSpeakersDialog = false}
-      })
+      }))
     }
     this.selectedSpeakers = null;
   }
@@ -446,14 +487,14 @@ export class EventDetailsComponent implements OnInit {
 
   //sponsor methods
   getSponsors(){
-    this.sponsorService.getSponsorsByEventId(this.pathId).subscribe({
+    this.subscriptions.push(this.sponsorService.getSponsorsByEventId(this.pathId).subscribe({
       next: (response: Sponsor[]) => {
         this.sponsors = response;
         this.event.sponsors = response;
       },
       error: (e) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Loading Failed', life: 3000 }),
       complete: () => {}
-    })
+    }))
   }
 
   saveSponsor(){
@@ -463,7 +504,7 @@ export class EventDetailsComponent implements OnInit {
       'description': this.sponsorForm.get('description').value,
       'event' : this.event
     }
-    this.sponsorService.saveSponsor(this.sponsor).subscribe({
+    this.subscriptions.push(this.sponsorService.saveSponsor(this.sponsor).subscribe({
       next: (response: Sponsor) => {
         this.sponsorForm.reset();
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Sponsor Added', life: 3000 });
@@ -473,7 +514,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.sponsorDialog = false
-    })
+    }))
   }
 
   openNewSponsor(){
@@ -498,7 +539,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   confirmDeleteSponsor(){
-    this.sponsorService.deleteSponsor(this.sponsor.id).subscribe({
+    this.subscriptions.push(this.sponsorService.deleteSponsor(this.sponsor.id).subscribe({
       next: (response: Sponsor) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Sponsor Deleted', life: 3000 });
         this.getSponsors();
@@ -507,12 +548,12 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.deleteSponsorDialog = false
-    })
+    }))
   }
 
   confirmDeleteSponsors(){
     for(let sponsor of this.selectedSponsors){
-      this.sponsorService.deleteSponsor(sponsor.id).subscribe({
+      this.subscriptions.push(this.sponsorService.deleteSponsor(sponsor.id).subscribe({
         next: (response: Sponsor) => {
           this.messageService.add({ severity: 'success', summary: 'success', detail: 'Sponsor Deleted', life: 3000 });
           this.getSponsors();
@@ -521,21 +562,21 @@ export class EventDetailsComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
         },
         complete: () => {this.deleteSponsorsDialog = false}
-      })
+      }))
     }
     this.selectedSponsors = null;
   }
 
   //committee methods
   getCommittees(){
-    this.committeeService.getCommitteesByEventId(this.pathId).subscribe({
+    this.subscriptions.push(this.committeeService.getCommitteesByEventId(this.pathId).subscribe({
       next: (response: Committee[]) => {
         this.committees = response;
         this.event.committees = response;
       },
       error: (e) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Loading Failed', life: 3000 }),
       complete: () => {}
-    })
+    }))
   }
 
   saveCommittee(){
@@ -551,7 +592,7 @@ export class EventDetailsComponent implements OnInit {
       'type' : this.committeeForm.get('type').value,
       'event' : this.event
     }
-    this.committeeService.saveCommittee(this.committee).subscribe({
+    this.subscriptions.push(this.committeeService.saveCommittee(this.committee).subscribe({
       next: (response: Committee) => {
         this.committeeForm.reset();
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Committee Added', life: 3000 });
@@ -561,7 +602,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.committeeDialog = false
-    })
+    }))
   }
 
   openNewCommittee(){
@@ -592,7 +633,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   confirmDeleteCommittee(){
-    this.committeeService.deleteCommittee(this.committee.id).subscribe({
+    this.subscriptions.push(this.committeeService.deleteCommittee(this.committee.id).subscribe({
       next: (response: Committee) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Committee Deleted', life: 3000 });
         this.getCommittees();
@@ -601,12 +642,12 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.deleteCommitteeDialog = false
-    })
+    }))
   }
 
   confirmDeleteCommittees(){
     for(let committee of this.selectedCommittees){
-      this.committeeService.deleteCommittee(committee.id).subscribe({
+      this.subscriptions.push(this.committeeService.deleteCommittee(committee.id).subscribe({
         next: (response: Committee) => {
           this.messageService.add({ severity: 'success', summary: 'success', detail: 'Committee Deleted', life: 3000 });
           this.getCommittees();
@@ -615,7 +656,7 @@ export class EventDetailsComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
         },
         complete: () => {this.deleteCommitteesDialog = false}
-      })
+      }))
     }
     this.selectedCommittees = null;
   }
@@ -623,14 +664,14 @@ export class EventDetailsComponent implements OnInit {
   
   //student methods
   getStudents(){
-    this.studentService.getStudentsByEventId(this.pathId).subscribe({
+    this.subscriptions.push(this.studentService.getStudentsByEventId(this.pathId).subscribe({
       next: (response: Student[]) => {
         this.students = response;
         this.event.students = response;
       },
       error: (e) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Loading Failed', life: 3000 }),
       complete: () => {}
-    })
+    }))
   }
 
   saveStudent(){
@@ -646,7 +687,7 @@ export class EventDetailsComponent implements OnInit {
       'gender' : this.studentForm.get('gender').value,
       'event' : this.event,
     }
-    this.studentService.saveStudent(this.student).subscribe({
+    this.subscriptions.push(this.studentService.saveStudent(this.student).subscribe({
       next: (response: Student) => {
         this.studentForm.reset();
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Student Added', life: 3000 });
@@ -656,7 +697,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.studentDialog = false
-    })
+    }))
   }
 
   openNewStudent(){
@@ -687,7 +728,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   confirmDeleteStudent(){
-    this.studentService.deleteStudent(this.student.id).subscribe({
+    this.subscriptions.push(this.studentService.deleteStudent(this.student.id).subscribe({
       next: (response: Student) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Student Deleted', life: 3000 });
         this.getStudents();
@@ -696,12 +737,12 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.deleteStudentDialog = false
-    })
+    }))
   }
 
   confirmDeleteStudents(){
     for(let student of this.selectedStudents){
-      this.studentService.deleteStudent(student.id).subscribe({
+      this.subscriptions.push(this.studentService.deleteStudent(student.id).subscribe({
         next: (response: Student) => {
           this.messageService.add({ severity: 'success', summary: 'success', detail: 'Student Deleted', life: 3000 });
           this.getStudents();
@@ -710,7 +751,7 @@ export class EventDetailsComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
         },
         complete: () => {this.deleteStudentsDialog = false}
-      })
+      }))
     }
     this.selectedStudents = null;
   }
@@ -718,14 +759,14 @@ export class EventDetailsComponent implements OnInit {
   
   //teacher methods
   getTeachers(){
-    this.teacherService.getTeachersByEventId(this.pathId).subscribe({
+    this.subscriptions.push(this.teacherService.getTeachersByEventId(this.pathId).subscribe({
       next: (response: Teacher[]) => {
         this.teachers = response;
         this.event.teachers = response;
       },
       error: (e) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Loading Failed', life: 3000 }),
       complete: () => {}
-    })
+    }))
   }
 
   saveTeacher(){
@@ -740,7 +781,7 @@ export class EventDetailsComponent implements OnInit {
       'gender' : this.teacherForm.get('gender').value,
       'event' : this.event,
     }
-    this.teacherService.saveTeacher(this.teacher).subscribe({
+    this.subscriptions.push(this.teacherService.saveTeacher(this.teacher).subscribe({
       next: (response: Teacher) => {
         this.teacherForm.reset();
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Teacher Added', life: 3000 });
@@ -750,7 +791,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.teacherDialog = false
-    })
+    }))
   }
 
   openNewTeacher(){
@@ -780,7 +821,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   confirmDeleteTeacher(){
-    this.teacherService.deleteTeacher(this.teacher.id).subscribe({
+    this.subscriptions.push(this.teacherService.deleteTeacher(this.teacher.id).subscribe({
       next: (response: Teacher) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Teacher Deleted', life: 3000 });
         this.getTeachers();
@@ -789,12 +830,12 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.deleteTeacherDialog = false
-    })
+    }))
   }
 
   confirmDeleteTeachers(){
     for(let teacher of this.selectedTeachers){
-      this.teacherService.deleteTeacher(teacher.id).subscribe({
+      this.subscriptions.push(this.teacherService.deleteTeacher(teacher.id).subscribe({
         next: (response: Teacher) => {
           this.messageService.add({ severity: 'success', summary: 'success', detail: 'Teacher Deleted', life: 3000 });
           this.getTeachers();
@@ -803,21 +844,21 @@ export class EventDetailsComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
         },
         complete: () => {this.deleteTeachersDialog = false}
-      })
+      }))
     }
     this.selectedTeachers = null;
   }
 
   //company methods
   getCompanies(){
-    this.companyService.getCompaniesByEventId(this.pathId).subscribe({
+    this.subscriptions.push(this.companyService.getCompaniesByEventId(this.pathId).subscribe({
       next: (response: Company[]) => {
         this.companies = response;
         this.event.companies = response;
       },
       error: (e) => this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Loading Failed', life: 3000 }),
       complete: () => {}
-    })
+    }))
   }
 
   saveCompany(){
@@ -830,7 +871,7 @@ export class EventDetailsComponent implements OnInit {
       'address': this.companyForm.get('address').value,
       'event' : this.event,
     }
-    this.companyService.saveCompany(this.company).subscribe({
+    this.subscriptions.push(this.companyService.saveCompany(this.company).subscribe({
       next: (response: Company) => {
         this.teacherForm.reset();
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Company Added', life: 3000 });
@@ -840,7 +881,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.companyDialog = false
-    })
+    }))
   }
 
   openNewCompany(){
@@ -868,7 +909,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   confirmDeleteCompany(){
-    this.companyService.deleteCompany(this.company.id).subscribe({
+    this.subscriptions.push(this.companyService.deleteCompany(this.company.id).subscribe({
       next: (response: Company) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Company Deleted', life: 3000 });
         this.getCompanies();
@@ -877,12 +918,12 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.deleteCompanyDialog = false
-    })
+    }))
   }
 
   confirmDeleteCompanies(){
     for(let company of this.selectedCompanies){
-      this.companyService.deleteCompany(company.id).subscribe({
+      this.subscriptions.push(this.companyService.deleteCompany(company.id).subscribe({
         next: (response: Company) => {
           this.messageService.add({ severity: 'success', summary: 'success', detail: 'Teacher Deleted', life: 3000 });
           this.getCompanies();
@@ -891,7 +932,7 @@ export class EventDetailsComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
         },
         complete: () => {this.deleteCompaniesDialog = false}
-      })
+      }))
     }
     this.selectedCompanies = null;
   }
@@ -948,7 +989,7 @@ export class EventDetailsComponent implements OnInit {
       formData.append('logo_file', this.logo_file, this.logo_file?.name);
     }
     console.log(formData)
-    this.eventService.saveLogo(this.event.id, formData).subscribe({
+    this.subscriptions.push(this.eventService.saveLogo(this.event.id, formData).subscribe({
       next: (response: Event) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Logo updated', life: 3000 });
         this.getEvent();
@@ -957,7 +998,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.logoDialog = false
-    })
+    }))
   }
 
   deleteLogo(){
@@ -965,7 +1006,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   confirmDeleteLogo(){
-    this.eventService.deleteLogo(this.event.id).subscribe({
+    this.subscriptions.push(this.eventService.deleteLogo(this.event.id).subscribe({
       next: (response: Event) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Logo deleted', life: 3000 });
         this.getEvent();
@@ -974,7 +1015,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.deleteLogoDialog = false
-    })
+    }))
 
   }
 
@@ -1002,7 +1043,7 @@ export class EventDetailsComponent implements OnInit {
     if (this.poster_file != null) {
       formData.append('poster_file', this.poster_file, this.poster_file?.name);
     }
-    this.eventService.savePoster(this.event.id, formData).subscribe({
+    this.subscriptions.push(this.eventService.savePoster(this.event.id, formData).subscribe({
       next: (response: Event) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Poster added', life: 3000 });
         this.getEvent();
@@ -1011,7 +1052,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.posterDialog = false
-    })
+    }))
   }
 
   deletePoster(){
@@ -1019,7 +1060,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   confirmDeletePoster(){
-    this.eventService.deletePoster(this.event.id).subscribe({
+    this.subscriptions.push(this.eventService.deletePoster(this.event.id).subscribe({
       next: (response: Event) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Poster deleted', life: 3000 });
         this.getEvent();
@@ -1028,7 +1069,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.deletePosterDialog = false
-    })
+    }))
 
   }
 
@@ -1037,7 +1078,7 @@ export class EventDetailsComponent implements OnInit {
 
     //check if link does contain the word embed
     if(this.teaserLink.includes("embed")){
-      this.eventService.saveTeaser(this.event.id, this.teaserLink).subscribe({
+      this.subscriptions.push(this.eventService.saveTeaser(this.event.id, this.teaserLink).subscribe({
         next: (response: any) => {
           console.log(response.link);
           this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Teaser Link Saved', life: 3000 });
@@ -1047,7 +1088,7 @@ export class EventDetailsComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
         },
         complete: () => this.teaserLink = this.event.youtubeTeaserLink
-      })
+      }))
     }else{
       this.messageService.add({ severity: 'error', summary: 'NOT EMBED', detail: 'Please Make the youtube link embed', life: 3000 });
     }
@@ -1056,7 +1097,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   resetTeaser(){
-    this.eventService.resetTeaser(this.event.id).subscribe({
+    this.subscriptions.push(this.eventService.resetTeaser(this.event.id).subscribe({
       next: (response: any) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event Teaser Deleted', life: 3000 });
         this.event.youtubeTeaserLink = null;
@@ -1065,7 +1106,7 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.teaserLink = this.event.youtubeTeaserLink
-    })
+    }))
 
   }
 
@@ -1075,7 +1116,7 @@ export class EventDetailsComponent implements OnInit {
 
     //check if link does contain the word embed
     if(this.liveStreamLink.includes("embed")){
-      this.eventService.saveLiveStream(this.event.id, this.liveStreamLink).subscribe({
+      this.subscriptions.push(this.eventService.saveLiveStream(this.event.id, this.liveStreamLink).subscribe({
         next: (response: any) => {
           this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event LiveStream Link Saved', life: 3000 });
           this.event.youtubeLiveStreamLink = response.link;
@@ -1084,7 +1125,7 @@ export class EventDetailsComponent implements OnInit {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
         },
         complete: () => this.liveStreamLink = this.event.youtubeLiveStreamLink
-      })
+      }))
     }else{
       this.messageService.add({ severity: 'error', summary: 'NOT EMBED', detail: 'Please Make the youtube link embed', life: 3000 });
     }
@@ -1093,7 +1134,7 @@ export class EventDetailsComponent implements OnInit {
   }
 
   resetLiveStream(){
-    this.eventService.resetLiveStream(this.event.id).subscribe({
+    this.subscriptions.push(this.eventService.resetLiveStream(this.event.id).subscribe({
       next: (response: any) => {
         this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event LiveStream Deleted', life: 3000 });
         this.event.youtubeLiveStreamLink = null;
@@ -1102,10 +1143,81 @@ export class EventDetailsComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
       },
       complete: () => this.liveStreamLink = this.event.youtubeLiveStreamLink
-    })
+    }))
 
   }
 
 
+  //album
+  getPhotosByEvent(){
+    this.subscriptions.push(this.photoService.getPhotosByEventId(this.event.id).subscribe({
+      next: (response: Photo[]) => {
+        this.event.album = response;
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => {console.log(this.event)}
+    }))
+  }
+
+  imageClick(index: number) {
+    this.activeIndex = index;
+    this.displayCustom = true;
+  } 
+
+  openNewPictures(){
+    this.albumDialog = true;
+  }
+
+  saveAlbum(){
+
+    let formData: FormData = new FormData();
+    if (this.album_files != null) {
+      for (let i = 0; i < this.album_files.length; i++) {
+        formData = new FormData();
+        formData.append('photo_file', this.album_files[i], this.album_files[i].name);
+        this.subscriptions.push(this.photoService.savePhoto(this.event.id, formData).subscribe({
+          next: (response: Event) => {
+            this.messageService.add({ severity: 'success', summary: 'success', detail: 'Event photo added', life: 3000 });
+            if(i == this.album_files.length-1){
+              this.getPhotosByEvent()
+            }
+          },
+          error: (e) => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+          },
+          complete: () => {
+            if(i == this.album_files.length-1){
+              this.albumDialog = false
+            }
+          }
+        }))
+      }
+    }
+
+    
+  }
+
+  onSelectPictures(event){
+    this.album_files = event.currentFiles;
+    console.log(event)
+
+  }
+
+  deletePicture(image){
+    this.subscriptions.push(this.photoService.deletePhoto(image.id).subscribe({
+      next: (response: Event) => {
+        this.messageService.add({ severity: 'success', summary: 'success', detail: 'photo deleted', life: 3000 });
+        this.getPhotosByEvent()
+      },
+      error: (e) => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed', life: 3000 });
+      },
+      complete: () => {
+        
+      }
+    }))
+  }
 
 }

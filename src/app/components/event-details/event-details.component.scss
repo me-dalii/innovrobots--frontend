@@ -8,3 +8,26 @@
     box-shadow: 0 0 11px rgba(33,33,33,.2); 
 
 }
+.pictureCard{
+    height: 254px;
+    background: rgb(46, 44, 44);
+    transition: all 300ms;
+}
+.pictureCard:hover{
+    opacity: 0.8;
+    transform: scale(1.10);
+}
+
+.cardy {
+    border-radius: 20px;
+    position: relative;
+    padding: 1.8rem;
+    border: 1px solid #c3c6ce;
+    transition: 0.5s ease-out;
+    overflow: visible;
+  }
+
+.cardy:hover {
+    border-color: #008bf8;
+    box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+}

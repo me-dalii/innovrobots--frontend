@@ -3,7 +3,7 @@
     <div id="home" class="landing-wrapper overflow-hidden">
         <div class="py-4 px-4 mx-0 md:mx-6 lg:mx-8 lg:px-8 flex align-items-center justify-content-between relative lg:static mb-3">
             <a class="flex align-items-center" href="#">
-                <!-- <img src="assets/layout/images/light.svg" alt="Sakai Logo" height="50" class="mr-0 lg:mr-2"> -->
+                <img *ngIf="event?.logo" [src]="chs?.getSrcFromCustomFile(event?.logo)" alt="event logo" width="70px" class="mr-2">
                 <span class="text-900 font-medium text-2xl line-height-3 mr-8">Innovrobots</span>
             </a>
             <a pRipple class="cursor-pointer block lg:hidden text-700" pStyleClass="@next" enterClass="hidden" leaveToClass="hidden" [hideOnOutsideClick]="true">
@@ -45,8 +45,10 @@
                 <h1 class="text-6xl font-bold text-gray-900 line-height-2"><span class="font-light block">Welcome to</span>{{event?.name}}</h1>
                 <p class="font-normal text-2xl line-height-3 md:mt-3 text-gray-700">{{event?.description}}</p>
                 <button pButton pRipple (click)="toRegistration()" type="button" label="Register" class="p-button-rounded text-xl border-none mt-3 bg-blue-500 font-normal line-height-3 px-3 text-white"></button>
+                <button *ngIf="event?.youtubeLiveStreamLink" pButton pRipple (click)="toLive()" type="button" label="Watch Now" class=" p-button-rounded  text-xl border-none mt-3 ml-2 bg-red-600 font-normal line-height-3 px-3 text-white"></button>
+           
             </div>
-            <img src="assets/images/robots.webp" alt="" class="sm:mt-5 md:mt-0" style="right:10%;">
+            <img *ngIf="event?.poster" [src]="chs?.getSrcFromCustomFile(event?.poster)" alt="" class="sm:mt-5 md:mt-0" width="20%" style="right:10%;">
         </div>
         
         <div  class="py-4 px-4 lg:px-8 mt-5 mx-0 lg:mx-8">
@@ -71,6 +73,9 @@
                                 </p-card>
                             </ng-template>
                         </p-timeline>
+                        <h5 class="text-gray-900">Teaser Trailer</h5>
+                        <iframe class="mt-3" width="560" height="315" [src]="event?.youtubeTeaserLink | safe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
                     </div>
                 </div>
 
@@ -83,8 +88,8 @@
                 <div *ngFor="let c of scientificCommittee" class="col-12 md:col-12 lg:col-4 p-0 lg:pr-5 lg:pb-5 mt-4 lg:mt-0">
                     <div style="height:160px; padding:2px; border-radius:10px; background: linear-gradient(90deg, rgba(253, 228, 165, 0.2),rgba(187, 199, 205, 0.2)), linear-gradient(180deg, rgba(253, 228, 165, 0.2),rgba(187, 199, 205, 0.2));">
                         <div class="p-3 surface-card h-full" style="border-radius:8px;">
-                            <div class="flex align-items-center justify-content-center bg-yellow-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
-                                <i class="pi pi-fw pi-user text-2xl text-yellow-700"></i>
+                            <div class="flex align-items-center justify-content-center bg-blue-200 mb-3" style="width:3.5rem;height:3.5rem; border-radius:10px;">
+                                <i class="pi pi-fw pi-user text-2xl text-blue-700"></i>
                             </div>
                             <h5 class="mb-2 text-900">{{c?.firstName + " " + c?.lastName}}</h5>
                             <span class="text-600">{{c?.email}}</span>
@@ -143,10 +148,6 @@
                     </div>
                 </ng-template>
             </p-carousel>
-
-           
-    
-            
         </div>
     
         
@@ -156,19 +157,19 @@
                 <div class="col-12 md:col-2" style="margin-top:-1.5rem;">
                     <a (click)="router.navigate(['/pages/landing'], {fragment: 'home'})" class="flex flex-wrap align-items-center justify-content-center md:justify-content-start md:mb-0 mb-3 cursor-pointer">
                         <!-- <img src="assets/layout/images/light.svg" alt="footer sections" width="50" height="50" class="mr-2"> -->
-                        <h4 class="font-medium text-3xl text-900">Innovrobots</h4>
+                        <h4 class="font-medium text-3xl text-900">InnovRobots</h4>
                     </a>
                 </div>
     
                 <div class="col-12 md:col-10 lg:col-7">
                     <div class="grid text-center md:text-left">
                         <div class="col-12 md:col-3">
-                            <h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Company</h4>
-                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">About Us</a>
+                            <h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Event</h4>
+                            <a (click)="goToManager()" class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Manage</a>
                             <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">News</a>
                             <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Investor Relations</a>
                             <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Careers</a>
-                            <a class="line-height-3 text-xl block cursor-pointer text-700">Media Kit</a>
+                            <a (click)="router.navigate(['/previous_editions'])" class="line-height-3 text-xl block cursor-pointer text-700">Previous Editions</a>
                         </div>
                         
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
@@ -181,11 +182,11 @@
                         <div class="col-12 md:col-3 mt-4 md:mt-0">
                             <h4 class="font-medium text-2xl line-height-3 mb-3 text-900">Community</h4>
                             <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Discord</a>
-                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Events
+                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Facebook
                                 <!-- <img src="assets/demo/images/landing/new-badge.svg" class="ml-2"/> -->
                             </a>
-                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">FAQ</a>
-                            <a class="line-height-3 text-xl block cursor-pointer text-700">Blog</a>
+                            <a class="line-height-3 text-xl block cursor-pointer mb-2 text-700">Instagram</a>
+                            <a class="line-height-3 text-xl block cursor-pointer text-700">LinkedIn</a>
                         </div>
         
                         <div class="col-12 md:col-3 mt-4 md:mt-0">

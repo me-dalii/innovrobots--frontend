@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { Subscription } from 'rxjs';
 import { Event } from 'src/models/Event';
 import { CustomFileHandlerService } from 'src/services/CustomFileHandler/custom-file-handler.service';
 import { EventService } from 'src/services/event.service';
@@ -10,9 +11,9 @@ import { EventService } from 'src/services/event.service';
   selector: 'app-event',
   templateUrl: './event.component.html',
   styleUrls: ['./event.component.scss'],
-  providers: [MessageService]
+  providers: [MessageService],
 })
-export class EventComponent implements OnInit {
+export class EventComponent implements OnInit, OnDestroy {
 
   events: Event[];
   selectedEvents : Event[];
@@ -26,12 +27,13 @@ export class EventComponent implements OnInit {
 
   eventForm: FormGroup;
 
-
+  subscriptions : Subscription[] = [];
 
   constructor(private messageService: MessageService, 
     private eventService : EventService, 
     private router: Router,
-    private chs : CustomFileHandlerService) { }
+    public chs : CustomFileHandlerService) { }
+  
 
   ngOnInit(): void {
 
@@ -54,18 +56,23 @@ export class EventComponent implements OnInit {
     })
   }
 
+  ngOnDestroy(): void {
+    for(let subscription of this.subscriptions){
+      subscription.unsubscribe();
+    }
+  }
+
   getEvents() {
-    this.eventService.getEvents().subscribe({
+    this.subscriptions.push(this.eventService.getEvents().subscribe({
       next: (response: Event[]) => this.events = response,
       error: (e) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Loading Failed', life: 3000 }),
-    })
+    }))
   }
 
   openNew(){
     this.event = {};
     this.eventForm.reset();
     this.eventDialog = true;
-
   }
 
   hideDialog(){
@@ -91,7 +98,7 @@ export class EventComponent implements OnInit {
 
     }
 
-    this.eventService.saveEvent(this.event).subscribe({
+    this.subscriptions.push(this.eventService.saveEvent(this.event).subscribe({
       next: (response: Event) => {
         this.eventForm.reset();
         this.messageService.add({ severity: 'success', summary: 'Succès', detail: 'Event Added', life: 3000 });
@@ -101,7 +108,7 @@ export class EventComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Failed', life: 3000 });
       },
       complete: () => this.eventDialog = false
-    })
+    }))
   
   }
 
@@ -118,9 +125,8 @@ export class EventComponent implements OnInit {
     this.deleteEventsDialog = true;
   }
 
-
   confirmDelete() {
-    this.eventService.deleteEvent(this.event.id).subscribe({
+    this.subscriptions.push(this.eventService.deleteEvent(this.event.id).subscribe({
       next: (v) => 
       {
         this.getEvents();
@@ -128,16 +134,16 @@ export class EventComponent implements OnInit {
       },
       error: (e) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Delete Failed', life: 3000 }),
       complete: () => this.deleteEventDialog = false
-    })
+    }))
     this.event = {};
   }
 
   confirmDeleteSelected() {
     for (let s of this.selectedEvents) {
-      this.eventService.deleteEvent(s.id).subscribe({
+      this.subscriptions.push(this.eventService.deleteEvent(s.id).subscribe({
         next: (v) => this.getEvents(),
         error: (e) => this.messageService.add({ severity: 'error', summary: 'Erreur', detail: 'Delete Failed', life: 3000 }),
-      })
+      }))
     }
     this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Deleted Successfully', life: 3000 });
     this.deleteEventsDialog = false;

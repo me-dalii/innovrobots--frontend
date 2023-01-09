@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { Subscription } from 'rxjs';
 import { Gender } from 'src/enums/Gender';
 import { University } from 'src/enums/University';
 import { Event } from 'src/models/Event';
@@ -15,7 +16,7 @@ import { TeacherService } from 'src/services/teacher.service';
   styleUrls: ['./teacher.component.scss'],
   providers: [MessageService]
 })
-export class TeacherComponent implements OnInit {
+export class TeacherComponent implements OnInit, OnDestroy {
 
   valCheck: string[] = ['remember'];
 
@@ -28,8 +29,12 @@ export class TeacherComponent implements OnInit {
 
   event : Event;
 
-  constructor(private messageService: MessageService, private router : Router, private teacherService: TeacherService
-    , private eventService: EventService) { }
+  subscriptions : Subscription[] = []
+
+  constructor(private messageService: MessageService,
+     private router : Router, 
+     private teacherService: TeacherService,
+     private eventService: EventService) { }
 
   ngOnInit(): void {
 
@@ -50,18 +55,24 @@ export class TeacherComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    for(let subscription of this.subscriptions){
+      subscription.unsubscribe()
+    }
+  }
+
   getActivatedEvent(){
-    this.eventService.getActivatedEvent().subscribe(
+    this.subscriptions.push(this.eventService.getActivatedEvent().subscribe(
       (data) => {
         this.event = data;
       }
-    )
+    ))
   }
   
   saveTeacher(){
     let teacher = this.teacherForm.value;
     teacher.event = this.event;
-    this.teacherService.saveTeacher(teacher).subscribe({
+    this.subscriptions.push(this.teacherService.saveTeacher(teacher).subscribe({
       next: (response: Teacher) => {
         this.teacherForm.reset();
         // this.messageService.add({ severity: 'success', summary: 'success', detail: 'Student Added', life: 3000 });
@@ -77,7 +88,7 @@ export class TeacherComponent implements OnInit {
         }
       },
       complete: () => {}
-    })
+    }))
   }
 
 }

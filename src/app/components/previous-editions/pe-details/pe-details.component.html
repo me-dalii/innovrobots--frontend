@@ -1,0 +1,91 @@
+<div class="grid p-6">
+    <div class="col-4">
+        <p-image *ngIf="event?.poster" [src]="chs?.getSrcFromCustomFile(event?.poster)" alt="event logo" width="100%"  [preview]="true"></p-image>
+    </div>
+    <div class="col-8 ">
+        <img *ngIf="event?.logo" [src]="chs?.getSrcFromCustomFile(event?.logo)" alt="event logo" width="20%"  [preview]="true">
+        <h1 class="mb-0">{{event?.name}}</h1>
+        <div class="mb-2">
+            <i class="pi pi-calendar" style="font-size: 1.1rem"></i> 
+            <span class="text-900">
+                {{event?.eventDate | date : "MM/dd/yyyy"}} - {{event?.endDate | date : "MM/dd/yyyy"}}
+            </span>
+        </div>
+        <p>{{event?.description}}</p>
+        <div class="grid">
+            <p-galleria [value]="event?.album" [visible]="displayCustom" [activeIndex]="activeIndex" [responsiveOptions]="responsiveOptions2" [containerStyle]="{'max-width': '850px'}" [numVisible]="7"
+                [circular]="true" [fullScreen]="true" [showItemNavigators]="true" [showThumbnails]="false" [baseZIndex]="100000">
+                <ng-template pTemplate="item" let-item>
+                    <img [src]="chs?.getSrcFromCustomFile(item)" alt="picture" style="width: 100%; display: block;"/>
+                </ng-template>
+                <ng-template pTemplate="thumbnail" let-item>
+                    <div class="grid grid-nogutter justify-content-center">
+                        <img [src]="chs?.getSrcFromCustomFile(item)" alt="picture" style="display: block;"/>
+                    </div>
+                </ng-template>
+            </p-galleria>
+            <div class="col-12">
+                <div *ngIf="event?.album" class="grid" style="max-width: 100%;">
+                    <div *ngFor="let image of event?.album; let index = index;" style="height: auto;" class="col-4" key="index">
+                        <div class="pictureCard">
+                            <img [src]="chs?.getSrcFromCustomFile(image)" alt="Photo from album" style="cursor: pointer" (click)="imageClick(index)" width="100%"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p-dataView class="col-6" [value]="scientificCommittee" [paginator]="true" [rows]="3" filterBy="name" layout="list">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between">
+                        <h4>Scientific Commitee</h4>
+                    </div>
+                </ng-template>
+                <ng-template let-comm pTemplate="listItem">
+                    <div class="col-12">
+                        <div class="product-list-item">
+                            <i class="pi pi-user mr-3" style="font-size: 1.5rem"></i>
+                            <div class="product-list-detail">
+                                <div class="product-name">{{comm?.firstName + " " + comm?.lastName}}</div>
+                                <div class="product-description">{{comm?.email}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+            <p-dataView class="col-6" [value]="organizationCommittee" [paginator]="true" [rows]="3" filterBy="name" layout="list">
+                <ng-template pTemplate="header">
+                    <div class="flex flex-column md:flex-row md:justify-content-between">
+                        <h4>Organization Commitee</h4>
+                    </div>
+                </ng-template>
+                <ng-template let-comm pTemplate="listItem">
+                    <div class="col-12">
+                        <div class="product-list-item">
+                            <i class="pi pi-user mr-3" style="font-size: 1.5rem"></i>
+                            <div class="product-list-detail">
+                                <div class="product-name">{{comm?.firstName + " " + comm?.lastName}}</div>
+                                <div class="product-description">{{comm?.email}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-dataView>
+            <h4 class="col-12">Sponsors</h4>
+            <p-carousel class="col-12" [value]="event?.sponsors" styleClass="custom-carousel" [numVisible]="3" [numScroll]="1" [circular]="true" [autoplayInterval]="3000" [responsiveOptions]="responsiveOptions">
+                <ng-template let-sponsor pTemplate="item">
+                    <div class="product-item">
+                        <div class="product-item-content">
+                            <div class="mb-3">
+                                <img src="assets/images/sponsor.png" [alt]="sponsor.name" width="15%" />
+                            </div>
+                            <div>
+                                <h4 class="mb-1">{{sponsor.name}}</h4>
+                                <h6 class="mt-0 mb-3">{{sponsor.description}}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-carousel>
+        </div> 
+    </div>
+</div>

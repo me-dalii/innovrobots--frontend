@@ -1,13 +1,8 @@
 <p-toast></p-toast>
-<p-menubar [model]="items">
-  <ng-template pTemplate="start">
-      <div (click)="toLanding()" pRipple class="mr-5 logo font-bold text-2xl">InnovRobots</div>
-  </ng-template>
-</p-menubar>
 
 <div class="grid p-6">
     <div class="col-4 col-offset-4">
-        <div class="card" >
+        <div class="cardy">
           <div class="flex align-items-center justify-content-between mb-0">
             <div class="font-medium text-3xl text-900 mb-3"></div>
             <div>
@@ -16,7 +11,7 @@
             </div>
 
 
-        </div>
+          </div>
             <div class="justify-content-between text-center">
                 <div class="text-center">                    
                     <p-image *ngIf="event?.logo" [src]="chs?.getSrcFromCustomFile(event?.logo)" alt="event logo" width="190px" height="150px" [preview]="true"></p-image>
@@ -33,7 +28,7 @@
                 <button (click)="updateButton()" pButton type="button" icon="pi pi-pencil" class="p-button-text"></button>
             </div>
             <div class="surface-section">
-                <div class="text-500 mb-5">About the event details.</div>
+                <div class="text-500 mb-5">About the event.</div>
                 <ul class="list-none p-0 m-0">
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <div class="text-500 w-6 md:w-4 font-medium">Name</div>
@@ -53,7 +48,7 @@
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <div class="text-500 w-6 md:w-4 font-medium">Start Date</div>
                         <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
-                            <div>{{event?.eventDate | date : "MM/dd/yy"}} </div>
+                            <div>{{event?.eventDate | date : "EEEE, dd/MM/yyyy"}} </div>
                             <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                         </div>
                     </li>
@@ -61,7 +56,7 @@
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <div class="text-500 w-6 md:w-4 font-medium">End Date</div>
                         <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
-                            <div>{{event?.endDate | date : "MM/dd/yy"}}</div>
+                            <div>{{event?.endDate | date : "EEEE, dd/MM/yyyy"}}</div>
                             <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                         </div>
                     </li>
@@ -69,7 +64,7 @@
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
                         <div class="text-500 w-6 md:w-4 font-medium">Number Of Days</div>
                         <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
-                            <div>{{event?.numberOfDays}}</div>
+                            <div>{{event?.numberOfDays + " Day"}} </div>
                             <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                         </div>
                     </li>
@@ -83,25 +78,40 @@
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                      <div class="text-500 w-6 md:w-4 font-medium">Number Of Allowed Students | Price</div>
-                      <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
-                          <div>{{event?.numberOfAllowedStudents}} {{event?.studentsPrice}}</div>
+                      <div class="text-500 w-3 md:w-4 font-medium">Number Of Allowed Students</div>
+                      <div class="text-900 w-2 md:w-4 md:flex-order-0 flex-order-1">
+                          <div>{{event?.numberOfAllowedStudents + " Student"}}</div>
+                          <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                      </div>
+                      <div class="text-500 w-3 md:w-2 font-medium">Price</div>
+                      <div class="text-900 w-2 md:w-2 md:flex-order-0 flex-order-1">
+                          <div>{{ event?.studentsPrice + " dt"}}</div>
                           <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                       </div>
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                      <div class="text-500 w-6 md:w-4 font-medium">Number Of Allowed Teachers | Price</div>
-                      <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
-                          <div>{{event?.numberOfAllowedTeachers}} {{event?.teachersPrice}}</div>
+                      <div class="text-500 w-3 md:w-4 font-medium">Number Of Allowed Teachers</div>
+                      <div class="text-900 w-2 md:w-4 md:flex-order-0 flex-order-1">
+                          <div>{{event?.numberOfAllowedTeachers + " Teacher"}}</div>
+                          <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                      </div>
+                      <div class="text-500 w-3 md:w-2 font-medium">Price</div>
+                      <div class="text-900 w-2 md:w-2 md:flex-order-0 flex-order-1">
+                          <div>{{ event?.teachersPrice + " dt"}}</div>
                           <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                       </div>
                     </li>
 
                     <li class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-                      <div class="text-500 w-6 md:w-4 font-medium">Number Of Allowed Companies | Price</div>
-                      <div class="text-900 w-full md:w-7 md:flex-order-0 flex-order-1">
-                          <div>{{event?.numberOfAllowedCompanies}} {{event?.companiesPrice}}</div>
+                      <div class="text-500 w-3 md:w-4 font-medium">Number Of Allowed Companies</div>
+                      <div class="text-900 w-2 md:w-4 md:flex-order-0 flex-order-1">
+                          <div>{{event?.numberOfAllowedCompanies + " Company"}}</div>
+                          <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
+                      </div>
+                      <div class="text-500 w-3 md:w-2 font-medium">Price</div>
+                      <div class="text-900 w-2 md:w-2 md:flex-order-0 flex-order-1">
+                          <div>{{ event?.companiesPrice + " dt"}}</div>
                           <!-- <p-skeleton *ngIf="!dataLoaded" width="5rem" height="1.2rem" ></p-skeleton> -->
                       </div>
                     </li>
@@ -777,6 +787,36 @@
 
                 <p-tabPanel header="Album">
 
+                  <p-toolbar styleClass="mb-1">
+                    <ng-template pTemplate="left">
+                      <div class="my-2">
+                        <button pButton pRipple label="Add" icon="pi pi-plus" class="p-button-success mr-2"
+                          (click)="openNewPictures()"></button>
+                      </div>
+                    </ng-template>
+                  </p-toolbar>
+
+                  <p-galleria [value]="event?.album" [visible]="displayCustom" [activeIndex]="activeIndex" [responsiveOptions]="responsiveOptions2" [containerStyle]="{'max-width': '850px'}" [numVisible]="7"
+                      [circular]="true" [fullScreen]="true" [showItemNavigators]="true" [showThumbnails]="false" [baseZIndex]="100000">
+                      <ng-template pTemplate="item" let-item>
+                          <img [src]="chs?.getSrcFromCustomFile(item)" alt="picture" style="width: 100%; display: block;"/>
+                      </ng-template>
+                      <ng-template pTemplate="thumbnail" let-item>
+                          <div class="grid grid-nogutter justify-content-center">
+                              <img [src]="chs?.getSrcFromCustomFile(item)" alt="picture" style="display: block;"/>
+                          </div>
+                      </ng-template>
+                  </p-galleria>
+                  <div *ngIf="event?.album" class="grid" style="max-width: 100%;">
+                    <div *ngFor="let image of event?.album; let index = index;" style="height: auto;" class="col-3" key="index">
+                        <div class="pictureCard">
+                          <img [src]="chs?.getSrcFromCustomFile(image)" alt="Photo from album" style="cursor: pointer" (click)="imageClick(index)" width="100%"/>
+                          <button pButton pRipple icon="pi pi-trash" class="p-button-danger mr-2"
+                            (click)="deletePicture(image)"></button>
+                        </div>
+                        
+                    </div>
+                  </div>
                   
                 </p-tabPanel>
 
@@ -1754,5 +1794,22 @@
     <button pButton pRipple icon="pi pi-times" class="p-button-text" label="No"
       (click)="deletePosterDialog = false"></button>
     <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Yes" (click)="confirmDeletePoster()"></button>
+  </ng-template>
+</p-dialog>
+
+<!-- Album dialog Section-->
+
+<p-dialog [(visible)]="albumDialog" header="Add pictures" [modal]="true" [style]="{width:'50%'}">
+  <div class="flex align-items-center justify-content-center mb-4">
+    <!-- <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i> -->
+    <span>Add pictures of this event.</span>
+  </div>
+  <p-fileUpload accept="image/png, image/jpeg" id="pics" multiple="multiple" (onSelect)="onSelectPictures($event)" [showCancelButton]=false  maxFileSize="10000000" invalidFileSizeMessageDetail= "la taille de fichier maximale est de 10 Mo."
+  [showUploadButton]=false>
+  </p-fileUpload>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Cancel"
+      (click)="albumDialog = false"></button>
+    <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Save" (click)="saveAlbum()"></button>
   </ng-template>
 </p-dialog>

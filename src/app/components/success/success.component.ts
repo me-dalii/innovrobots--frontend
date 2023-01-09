@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Sponsor } from 'src/models/Sponsor';
 
 @Component({
   selector: 'app-success',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./success.component.scss']
 })
 export class SuccessComponent implements OnInit {
+
+  sponsors : Sponsor[];
+
 
   constructor() { }
 

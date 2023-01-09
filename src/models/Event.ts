@@ -6,6 +6,7 @@ import { Student } from "./Student";
 import { Teacher } from "./Teacher";
 import { Company } from "./Company";
 import { CustomFile } from "./CustomFile";
+import { Photo } from "./Photo";
 
 export interface Event extends AbstractEntity{
     name? : string;
@@ -40,6 +41,9 @@ export interface Event extends AbstractEntity{
     logo? : CustomFile;
     banner? : CustomFile;
     poster? : CustomFile;
+
+    album? : Photo[];
+
 
 
 }

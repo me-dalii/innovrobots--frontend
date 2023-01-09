@@ -1,0 +1,28 @@
+
+<div class="surface-ground px-4 md:px-6">
+    <div class="grid">
+        <div class="col-12 lg:col-4" *ngFor="let event of events">
+            <div class="p-3 h-full">
+                <div class="shadow-2 p-3 h-full flex flex-column surface-card" style="border-radius: 6px">
+                    <div class="text-900 font-medium text-2xl mb-2">{{event?.name}}</div>
+                    <div class="text-600">{{event?.description}}</div>
+                    <hr class="my-3 mx-0 border-top-1 border-none surface-border"/>
+                    <div class="flex align-items-center">
+                        <!-- <span class="font-bold text-2xl text-900">$9</span> -->
+                        <span class="ml-2 font-medium text-600">{{event?.eventDate | date : "MM/dd/yyyy" }} - {{event?.endDate | date : "MM/dd/yyyy" }}</span>
+                    </div>
+                    <hr class="my-3 mx-0 border-top-1 border-none surface-border"/>
+                    <ul class="list-none p-0 m-0 flex-grow-1">
+                        <li class="flex align-items-center mb-3">
+                            <i class="pi pi-map-marker text-green-500 mr-2"></i>
+                            <span class="text-900">{{event?.place}}</span>
+                        </li>
+                    </ul>
+                    <hr class="mb-3 mx-0 border-top-1 border-none surface-border mt-auto"/>
+                    <button (click)="viewEvent(event)" pButton pRipple label="Read More" class="p-3 w-full p-button-outlined" ></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

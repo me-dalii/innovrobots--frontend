@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { Subscription } from 'rxjs';
 import { Gender } from 'src/enums/Gender';
 import { University } from 'src/enums/University';
 import { Event } from 'src/models/Event';
@@ -15,12 +16,11 @@ import { StudentService } from 'src/services/student.service';
   styleUrls: ['./student.component.scss'],
   providers: [MessageService]
 })
-export class StudentComponent implements OnInit {
+export class StudentComponent implements OnInit, OnDestroy {
 
   valCheck: string[] = ['remember'];
 
   password!: string;
-
 
   studentForm : FormGroup;
 
@@ -31,11 +31,14 @@ export class StudentComponent implements OnInit {
 
   event : Event;
 
-  constructor(private messageService: MessageService, private router : Router, private studentService: StudentService
-    , private eventService: EventService) { }
+  subscriptions : Subscription[] = []
+
+  constructor(private messageService: MessageService,
+     private router : Router,
+     private studentService: StudentService, 
+     private eventService: EventService) { }
 
   ngOnInit(): void {
-
     this.getActivatedEvent();
 
     this.genders = Object.keys(this.gender);
@@ -54,20 +57,25 @@ export class StudentComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    for(let subscription of this.subscriptions){
+      subscription.unsubscribe()
+    }
+  }
+
   getActivatedEvent(){
-    this.eventService.getActivatedEvent().subscribe(
+    this.subscriptions.push(this.eventService.getActivatedEvent().subscribe(
       (data) => {
         this.event = data;
         console.log(this.event);
       }
-    )
+    ))
   }
   
   saveStudent(){
     let student = this.studentForm.value;
     student.event = this.event;
-    console.log(student);
-    this.studentService.saveStudent(student).subscribe({
+    this.subscriptions.push(this.studentService.saveStudent(student).subscribe({
       next: (response: Student) => {
         this.studentForm.reset();
         // this.messageService.add({ severity: 'success', summary: 'success', detail: 'Student Added', life: 3000 });
@@ -83,6 +91,6 @@ export class StudentComponent implements OnInit {
         }
       },
       complete: () => {}
-    })
+    }))
   }
 }
